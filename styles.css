@@ -1,0 +1,370 @@
+/* =========================================================
+   QUICKBALANCE
+   Standard Bank-inspired colour scheme
+   ========================================================= */
+
+
+/* =========================================================
+   APPLICATION
+   ========================================================= */
+
+.stApp {
+    background-color: #F4F6F9;
+}
+
+.block-container {
+    max-width: 1100px;
+
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+
+/* =========================================================
+   GENERAL TEXT
+   ========================================================= */
+
+h1,
+h2,
+h3 {
+    color: #003B7A !important;
+}
+
+p,
+label {
+    color: #24364B;
+}
+
+
+/* =========================================================
+   ACCOUNT CARD
+   ========================================================= */
+
+.st-key-account_card {
+    background:
+        linear-gradient(
+            135deg,
+            #003B7A 0%,
+            #004B93 55%,
+            #0056A6 100%
+        );
+
+    border-radius: 14px;
+
+    padding: 28px 30px;
+
+    margin-bottom: 24px;
+
+    border: 1px solid #00356E;
+
+    box-shadow:
+        0 8px 24px rgba(0, 59, 122, 0.18);
+}
+
+
+/* Account card text */
+
+.st-key-account_card p,
+.st-key-account_card label {
+    color: #D8E8FA !important;
+}
+
+.st-key-account_card h2,
+.st-key-account_card h3 {
+    color: #FFFFFF !important;
+}
+
+
+/* Account label */
+
+.st-key-account_card
+[data-testid="stCaptionContainer"] {
+    color: #AFC9E7 !important;
+
+    font-size: 12px;
+}
+
+
+/* Account number */
+
+.st-key-account_card
+[data-testid="stMarkdownContainer"] p {
+    color: #FFFFFF;
+}
+
+
+/* Available status */
+
+/* .st-key-account_card
+[data-testid="stAlert"] {
+    background-color: #E6F7F3;
+
+    border: none;
+
+    color: #00A88F;
+
+    padding: 8px 12px;
+
+    border-radius: 12px;
+}
+
+.st-key-account_card
+[data-testid="stAlert"] p {
+    color: #00A88F !important;
+
+    font-weight: 700;
+} */
+
+/* .st-key-account_card [data-testid="stAlert"] {
+    display: inline-flex;
+
+    width: fit-content;
+
+    background-color: #E6F7F3 !important;
+
+    border: none !important;
+
+    border-radius: 10px;
+
+    padding: 7px 9px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+} */
+/* 
+.st-key-account_card [data-testid="stAlert"] p {
+    color: #00A88F !important;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    margin: 0;
+
+    text-align: center;
+    
+} */
+
+.st-key-account_card [data-testid="stMarkdownContainer"] p {
+    margin-bottom: 0;
+}
+
+/* =========================================================
+   DASHBOARD CARDS
+   ========================================================= */
+
+.st-key-transactions_card,
+.st-key-monthly_card,
+.st-key-documents_card {
+    background-color: #FFFFFF;
+
+    border: 1px solid #DCE3EC;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 3px 12px rgba(0, 59, 122, 0.06);
+}
+
+
+/* =========================================================
+   RECENT TRANSACTIONS HEADER
+   ========================================================= */
+
+.st-key-transactions_card h3 {
+    color: #003B7A !important;
+
+    font-size: 16px;
+
+    margin-top: 0;
+}
+
+
+/* Last 5 */
+
+.st-key-transactions_card
+[data-testid="stCaptionContainer"] {
+    color: #55708D !important;
+
+    font-size: 11px;
+}
+
+
+
+
+
+/* =========================================================
+   THIS MONTH
+   ========================================================= */
+
+.st-key-monthly_card
+[data-testid="stCaptionContainer"] {
+    color: #55708D !important;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+
+.st-key-monthly_card p {
+    color: #55708D;
+}
+
+.st-key-monthly_card strong {
+    color: #17324D;
+}
+
+
+/* =========================================================
+   DOCUMENTS
+   ========================================================= */
+
+.st-key-documents_card
+[data-testid="stCaptionContainer"] {
+    color: #55708D !important;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+}
+
+.st-key-documents_card strong {
+    color: #17324D;
+}
+
+.st-key-documents_card p {
+    color: #718399;
+}
+
+
+/* =========================================================
+   DOWNLOAD BUTTON
+   ========================================================= */
+
+.stDownloadButton > button {
+    background-color: #0072CE !important;
+
+    color: #FFFFFF !important;
+
+    border: none !important;
+
+    border-radius: 7px !important;
+
+    font-weight: 700 !important;
+
+    min-height: 44px;
+}
+
+.stDownloadButton > button p {
+    color: #FFFFFF !important;
+}
+
+.stDownloadButton > button:hover {
+    background-color: #005BA8 !important;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
+
+.stButton > button {
+    background-color: #003B7A !important;
+
+    color: #FFFFFF !important;
+
+    border: none !important;
+
+    border-radius: 7px !important;
+
+    font-weight: 600 !important;
+
+    min-height: 44px;
+}
+
+.stButton > button p {
+    color: #FFFFFF !important;
+}
+
+.stButton > button:hover {
+    background-color: #0056A6 !important;
+}
+
+
+/* Primary login button */
+
+.stButton > button[kind="primary"] {
+    background-color: #0072CE !important;
+
+    color: #FFFFFF !important;
+}
+
+.stButton > button[kind="primary"] p {
+    color: #FFFFFF !important;
+}
+
+.stButton > button[kind="primary"]:hover {
+    background-color: #005BA8 !important;
+}
+
+
+/* =========================================================
+   INPUT FIELDS
+   ========================================================= */
+
+.stTextInput input {
+    background-color: #FFFFFF !important;
+
+    color: #17324D !important;
+
+    border: 1px solid #B9C7D6 !important;
+
+    border-radius: 7px !important;
+}
+
+.stTextInput input:focus {
+    border: 2px solid #0072CE !important;
+
+    box-shadow: none !important;
+}
+
+
+/* =========================================================
+   DIVIDERS
+   ========================================================= */
+
+hr {
+    border-color: #DCE3EC !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .block-container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .st-key-account_card {
+        padding: 22px;
+    }
+
+    .st-key-transactions_card,
+    .st-key-monthly_card,
+    .st-key-documents_card {
+        padding: 14px;
+    }
+}
