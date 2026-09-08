@@ -1,146 +1,234 @@
-import io
-from pathlib import Path
+# import io
+# from pathlib import Path
 
-import pandas as pd
-import streamlit as st
+# import pandas as pd
+# import streamlit as st
 
-from openpyxl.styles import Font, Alignment
+# from openpyxl.styles import Font, Alignment
 
-from services import (
-    authenticate_customer,
-    get_customer_accounts,
-    get_account_dashboard,
-    get_account_transactions
-)
-
-
+# from services import (
+#     authenticate_customer,
+#     get_customer_accounts,
+#     get_account_dashboard,
+#     get_account_transactions
+# )
 
 
-# =========================================================
-# PAGE CONFIGURATION
-# =========================================================
-
-st.set_page_config(
-    page_title="QuickBalance",
-    page_icon="🏦",
-    layout="centered"
-)
 
 
-# =========================================================
-# LOAD CSS
-# =========================================================
+# # =========================================================
+# # PAGE CONFIGURATION
+# # =========================================================
 
-def load_css():
-
-    css_file = Path("styles.css")
-
-    with open(css_file, "r", encoding="utf-8") as file:
-        css = file.read()
-
-    st.markdown(
-        f"<style>{css}</style>",
-        unsafe_allow_html=True
-    )
+# st.set_page_config(
+#     page_title="QuickBalance",
+#     page_icon="🏦",
+#     layout="centered"
+# )
 
 
-load_css()
+# # =========================================================
+# # LOAD CSS
+# # =========================================================
+
+# def load_css():
+
+#     css_file = Path("styles.css")
+
+#     with open(css_file, "r", encoding="utf-8") as file:
+#         css = file.read()
+
+#     st.markdown(
+#         f"<style>{css}</style>",
+#         unsafe_allow_html=True
+#     )
 
 
-# =========================================================
-# SESSION STATE
-# =========================================================
-
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "customer_id" not in st.session_state:
-    st.session_state.customer_id = None
+# load_css()
 
 
-# =========================================================
-# LOGIN PAGE
-# =========================================================
+# # =========================================================
+# # SESSION STATE
+# # =========================================================
 
-def login_page():
+# if "authenticated" not in st.session_state:
+#     st.session_state.authenticated = False
 
-    st.title("🏦 QuickBalance")
-
-    st.subheader("Customer Self-Service")
-
-    st.write(
-        "Access your account balance, recent transactions "
-        "and mini statement."
-    )
-
-    st.divider()
-
-    username = st.text_input(
-        "Username",
-        placeholder="Enter your username"
-    )
-
-    password = st.text_input(
-        "Password",
-        type="password",
-        placeholder="Enter your password"
-    )
-
-    login_button = st.button(
-        "Login",
-        type="primary",
-        use_container_width=True
-    )
-
-    if login_button:
-
-        if not username or not password:
-
-            st.error(
-                "Please enter your username and password."
-            )
-
-            return
-
-        customer = authenticate_customer(
-            username,
-            password
-        )
-
-        if customer is None:
-
-            st.error(
-                "Invalid username or password."
-            )
-
-            return
-
-        st.session_state.authenticated = True
-        st.session_state.customer_id = customer[0]
-
-        st.rerun()
+# if "customer_id" not in st.session_state:
+#     st.session_state.customer_id = None
 
 
-# =========================================================
-# ACCOUNT CARD
-# =========================================================
+# # =========================================================
+# # LOGIN PAGE
+# # =========================================================
 
-# def display_account_card(dashboard):
+# def login_page():
 
-#     first_name = dashboard["first_name"]
-#     last_name = dashboard["last_name"]
+#     st.title("🏦 QuickBalance")
 
-#     account_number = dashboard["account_number"]
-#     account_type = dashboard["acc_type"]
+#     st.subheader("Customer Self-Service")
 
-#     balance = dashboard["balance"]
-#     balance_rands = balance / 100
+#     st.write(
+#         "Access your account balance, recent transactions "
+#         "and mini statement."
+#     )
+
+#     st.divider()
+
+#     username = st.text_input(
+#         "Username",
+#         placeholder="Enter your username"
+#     )
+
+#     password = st.text_input(
+#         "Password",
+#         type="password",
+#         placeholder="Enter your password"
+#     )
+
+#     login_button = st.button(
+#         "Login",
+#         type="primary",
+#         use_container_width=True
+#     )
+
+#     if login_button:
+
+#         if not username or not password:
+
+#             st.error(
+#                 "Please enter your username and password."
+#             )
+
+#             return
+
+#         customer = authenticate_customer(
+#             username,
+#             password
+#         )
+
+#         if customer is None:
+
+#             st.error(
+#                 "Invalid username or password."
+#             )
+
+#             return
+
+#         st.session_state.authenticated = True
+#         st.session_state.customer_id = customer[0]
+
+#         st.rerun()
+
+
+# # =========================================================
+# # ACCOUNT CARD
+# # =========================================================
+
+# # def display_account_card(dashboard):
+
+# #     first_name = dashboard["first_name"]
+# #     last_name = dashboard["last_name"]
+
+# #     account_number = dashboard["account_number"]
+# #     account_type = dashboard["acc_type"]
+
+# #     balance = dashboard["balance"]
+# #     balance_rands = balance / 100
+
+# #     with st.container(
+# #         key="account_card"
+# #     ):
+
+# #         st.caption("QuickBalance")
+
+# #         st.markdown(
+# #             f"Account number: **{account_number}**"
+# #         )
+
+# #         st.success(
+# #             "Available Balance"
+# #         )
+
+# #         st.markdown(
+# #             f"## R{balance_rands:,.2f}"
+# #         )
+
+# #         holder_column, type_column = st.columns(2)
+
+# #         with holder_column:
+
+# #             st.caption("Account holder")
+
+# #             st.markdown(
+# #                 f"**{first_name} {last_name}**"
+# #             )
+
+# #         with type_column:
+
+# #             st.caption("Account type")
+
+# #             st.markdown(
+# #                 f"**{account_type}**"
+# #             )
+
+# def display_account_card(customer_id, accounts):
+
+#     account_options = {
+#         account[5]: account[0]
+#             for account in accounts
+#     }
 
 #     with st.container(
 #         key="account_card"
 #     ):
 
 #         st.caption("QuickBalance")
+
+#         selected_account_type = st.selectbox(
+#             "Select account",
+#             options=list(account_options.keys())
+#         )
+
+#         selected_account_id = account_options[
+#             selected_account_type
+#         ]
+
+#         st.write(
+#             "DEBUG:",
+#             selected_account_type,
+#             selected_account_id
+#         )
+
+#         # -------------------------------------------------
+#         # GET SELECTED ACCOUNT
+#         # -------------------------------------------------
+
+#         dashboard = get_account_dashboard(
+#             customer_id,
+#             selected_account_id
+#         )
+
+#         if dashboard is None:
+
+#             st.error(
+#                 "Unable to retrieve account information."
+#             )
+
+#             return None, None
+
+#         # -------------------------------------------------
+#         # ACCOUNT INFORMATION
+#         # -------------------------------------------------
+
+#         first_name = dashboard["first_name"]
+#         last_name = dashboard["last_name"]
+
+#         account_number = dashboard["account_number"]
+#         account_type = dashboard["acc_type"]
+
+#         balance = dashboard["balance"]
+#         balance_rands = balance / 100
 
 #         st.markdown(
 #             f"Account number: **{account_number}**"
@@ -172,472 +260,510 @@ def login_page():
 #                 f"**{account_type}**"
 #             )
 
-def display_account_card(customer_id, accounts):
+#         return dashboard, selected_account_id
 
-    account_options = {
-        account[5]: account[0]
-            for account in accounts
-    }
 
-    with st.container(
-        key="account_card"
-    ):
+# # =========================================================
+# # TRANSACTION ROW
+# # =========================================================
 
-        st.caption("QuickBalance")
+# def display_transaction(transaction):
 
-        selected_account_type = st.selectbox(
-            "Select account",
-            options=list(account_options.keys())
-        )
+#     (
+#         transaction_id,
+#         transaction_date,
+#         description,
+#         transaction_type,
+#         amount
+#     ) = transaction
 
-        selected_account_id = account_options[
-            selected_account_type
-        ]
+#     amount_rands = amount / 100
 
-        st.write(
-            "DEBUG:",
-            selected_account_type,
-            selected_account_id
-        )
+#     if transaction_type == "Credit":
 
-        # -------------------------------------------------
-        # GET SELECTED ACCOUNT
-        # -------------------------------------------------
+#         icon = "↑"
 
-        dashboard = get_account_dashboard(
-            customer_id,
-            selected_account_id
-        )
+#         amount_display = (
+#             f"+R{amount_rands:,.2f}"
+#         )
 
-        if dashboard is None:
+#         badge = "Income"
 
-            st.error(
-                "Unable to retrieve account information."
-            )
+#         row_class = "credit"
 
-            return None, None
+#     else:
 
-        # -------------------------------------------------
-        # ACCOUNT INFORMATION
-        # -------------------------------------------------
+#         icon = "↓"
 
-        first_name = dashboard["first_name"]
-        last_name = dashboard["last_name"]
+#         amount_display = (
+#             f"-R{amount_rands:,.2f}"
+#         )
 
-        account_number = dashboard["account_number"]
-        account_type = dashboard["acc_type"]
+#         badge = "Payment"
 
-        balance = dashboard["balance"]
-        balance_rands = balance / 100
+#         row_class = "debit"
 
-        st.markdown(
-            f"Account number: **{account_number}**"
-        )
+#     with st.container(
+#         border=True
+#     ):
 
-        st.success(
-            "Available Balance"
-        )
+#         icon_column, information_column, amount_column = st.columns(
+#             [0.7, 4, 1.5],
+#             vertical_alignment="center"
+#         )
 
-        st.markdown(
-            f"## R{balance_rands:,.2f}"
-        )
+#         with icon_column:
 
-        holder_column, type_column = st.columns(2)
+#             st.markdown(
+#                 f"### {icon}"
+#             )
 
-        with holder_column:
+#         with information_column:
 
-            st.caption("Account holder")
+#             st.markdown(
+#                 f"**{description.upper()}**"
+#             )
 
-            st.markdown(
-                f"**{first_name} {last_name}**"
-            )
+#             st.caption(
+#                 f"{transaction_date}  •  {badge}"
+#             )
 
-        with type_column:
+#         with amount_column:
 
-            st.caption("Account type")
+#             st.markdown(
+#                 f"**{amount_display}**"
+#             )
 
-            st.markdown(
-                f"**{account_type}**"
-            )
 
-        return dashboard, selected_account_id
+# # =========================================================
+# # RECENT TRANSACTIONS
+# # =========================================================
 
+# def display_recent_transactions(transactions):
 
-# =========================================================
-# TRANSACTION ROW
-# =========================================================
+#     with st.container(
+#         key="transactions_card"
+#     ):
 
-def display_transaction(transaction):
+#         header_column, count_column = st.columns(
+#             [4, 1],
+#             vertical_alignment="center"
+#         )
 
-    (
-        transaction_id,
-        transaction_date,
-        description,
-        transaction_type,
-        amount
-    ) = transaction
+#         with header_column:
 
-    amount_rands = amount / 100
+#             st.subheader(
+#                 "Recent transactions"
+#             )
 
-    if transaction_type == "Credit":
+#         with count_column:
 
-        icon = "↑"
+#             st.caption(
+#                 "Last 5"
+#             )
 
-        amount_display = (
-            f"+R{amount_rands:,.2f}"
-        )
+#         if not transactions:
 
-        badge = "Income"
+#             st.info(
+#                 "No recent transactions found."
+#             )
 
-        row_class = "credit"
+#             return
 
-    else:
+#         for transaction in transactions:
 
-        icon = "↓"
+#             display_transaction(transaction)
 
-        amount_display = (
-            f"-R{amount_rands:,.2f}"
-        )
 
-        badge = "Payment"
+# # =========================================================
+# # THIS MONTH
+# # =========================================================
 
-        row_class = "debit"
+# def display_monthly_summary(transactions):
 
-    with st.container(
-        border=True
-    ):
+#     money_in = sum(
+#         transaction[4]
+#         for transaction in transactions
+#         if transaction[3] == "Credit"
+#     )
 
-        icon_column, information_column, amount_column = st.columns(
-            [0.7, 4, 1.5],
-            vertical_alignment="center"
-        )
+#     money_out = sum(
+#         transaction[4]
+#         for transaction in transactions
+#         if transaction[3] == "Debit"
+#     )
 
-        with icon_column:
+#     money_in_rands = money_in / 100
+#     money_out_rands = money_out / 100
 
-            st.markdown(
-                f"### {icon}"
-            )
+#     with st.container(
+#         key="monthly_card"
+#     ):
 
-        with information_column:
+#         st.caption("THIS MONTH")
 
-            st.markdown(
-                f"**{description.upper()}**"
-            )
+#         income_column, income_value = st.columns(
+#             [2, 1]
+#         )
 
-            st.caption(
-                f"{transaction_date}  •  {badge}"
-            )
+#         with income_column:
 
-        with amount_column:
+#             st.write("Money in")
 
-            st.markdown(
-                f"**{amount_display}**"
-            )
+#         with income_value:
 
+#             st.markdown(
+#                 f"**+R{money_in_rands:,.2f}**"
+#             )
 
-# =========================================================
-# RECENT TRANSACTIONS
-# =========================================================
+#         st.divider()
 
-def display_recent_transactions(transactions):
+#         expense_column, expense_value = st.columns(
+#             [2, 1]
+#         )
 
-    with st.container(
-        key="transactions_card"
-    ):
+#         with expense_column:
 
-        header_column, count_column = st.columns(
-            [4, 1],
-            vertical_alignment="center"
-        )
+#             st.write("Money out")
 
-        with header_column:
+#         with expense_value:
 
-            st.subheader(
-                "Recent transactions"
-            )
+#             st.markdown(
+#                 f"**-R{money_out_rands:,.2f}**"
+#             )
 
-        with count_column:
 
-            st.caption(
-                "Last 5"
-            )
 
-        if not transactions:
 
-            st.info(
-                "No recent transactions found."
-            )
+# # =========================================================
+# # MINI STATEMENT
+# # =========================================================
 
-            return
+# def create_excel_statement(statement):
 
-        for transaction in transactions:
+#     statement_data = []
 
-            display_transaction(transaction)
+#     for transaction in statement["transactions"]:
 
+#         (
+#             transaction_id,
+#             transaction_date,
+#             description,
+#             transaction_type,
+#             amount
+#         ) = transaction
 
-# =========================================================
-# THIS MONTH
-# =========================================================
+#         statement_data.append(
+#             {
+#                 "Date": transaction_date,
+#                 "Description": description,
+#                 "Transaction Type": transaction_type,
+#                 "Amount (R)": amount / 100
+#             }
+#         )
 
-def display_monthly_summary(transactions):
+#     statement_df = pd.DataFrame(
+#         statement_data
+#     )
 
-    money_in = sum(
-        transaction[4]
-        for transaction in transactions
-        if transaction[3] == "Credit"
-    )
+#     output = io.BytesIO()
 
-    money_out = sum(
-        transaction[4]
-        for transaction in transactions
-        if transaction[3] == "Debit"
-    )
+#     with pd.ExcelWriter(
+#         output,
+#         engine="openpyxl"
+#     ) as writer:
 
-    money_in_rands = money_in / 100
-    money_out_rands = money_out / 100
+#         statement_df.to_excel(
+#             writer,
+#             index=False,
+#             sheet_name="Mini Statement",
+#             startrow=7
+#         )
 
-    with st.container(
-        key="monthly_card"
-    ):
+#         worksheet = writer.sheets[
+#             "Mini Statement"
+#         ]
 
-        st.caption("THIS MONTH")
+#         # -------------------------------------------------
+#         # TITLE
+#         # -------------------------------------------------
 
-        income_column, income_value = st.columns(
-            [2, 1]
-        )
+#         worksheet["A1"] = "QUICKBALANCE"
 
-        with income_column:
+#         worksheet["A1"].font = Font(
+#             bold=True,
+#             size=20
+#         )
 
-            st.write("Money in")
+#         worksheet["A2"] = "Mini Statement"
 
-        with income_value:
+#         worksheet["A2"].font = Font(
+#             bold=True,
+#             size=14
+#         )
 
-            st.markdown(
-                f"**+R{money_in_rands:,.2f}**"
-            )
+#         # -------------------------------------------------
+#         # CUSTOMER INFORMATION
+#         # -------------------------------------------------
 
-        st.divider()
+#         worksheet["A4"] = "Customer Name"
+#         worksheet["B4"] = statement["customer"]["name"]
 
-        expense_column, expense_value = st.columns(
-            [2, 1]
-        )
+#         worksheet["A5"] = "Account Number"
+#         worksheet["B5"] = (
+#             statement["customer"]["account_number"]
+#         )
 
-        with expense_column:
+#         worksheet["A6"] = "Account Type"
+#         worksheet["B6"] = (
+#             statement["customer"]["account_type"]
+#         )
 
-            st.write("Money out")
+#         worksheet["C4"] = "Current Balance"
 
-        with expense_value:
+#         worksheet["D4"] = (
+#             statement["balance"] / 100
+#         )
 
-            st.markdown(
-                f"**-R{money_out_rands:,.2f}**"
-            )
+#         for cell in [
+#             "A4",
+#             "A5",
+#             "A6",
+#             "C4"
+#         ]:
 
+#             worksheet[cell].font = Font(
+#                 bold=True
+#             )
 
+#         worksheet["D4"].number_format = (
+#             "R #,##0.00"
+#         )
 
+#         worksheet["D4"].font = Font(
+#             bold=True
+#         )
 
-# =========================================================
-# MINI STATEMENT
-# =========================================================
+#         # -------------------------------------------------
+#         # TRANSACTION TABLE
+#         # -------------------------------------------------
 
-def create_excel_statement(statement):
+#         header_row = 8
 
-    statement_data = []
+#         for cell in worksheet[header_row]:
 
-    for transaction in statement["transactions"]:
+#             cell.font = Font(
+#                 bold=True
+#             )
 
-        (
-            transaction_id,
-            transaction_date,
-            description,
-            transaction_type,
-            amount
-        ) = transaction
+#             cell.alignment = Alignment(
+#                 horizontal="center"
+#             )
 
-        statement_data.append(
-            {
-                "Date": transaction_date,
-                "Description": description,
-                "Transaction Type": transaction_type,
-                "Amount (R)": amount / 100
-            }
-        )
+#         for row in range(
+#             header_row + 1,
+#             worksheet.max_row + 1
+#         ):
 
-    statement_df = pd.DataFrame(
-        statement_data
-    )
+#             worksheet.cell(
+#                 row=row,
+#                 column=4
+#             ).number_format = (
+#                 "R #,##0.00"
+#             )
 
-    output = io.BytesIO()
+#         # -------------------------------------------------
+#         # FILTER + FREEZE
+#         # -------------------------------------------------
 
-    with pd.ExcelWriter(
-        output,
-        engine="openpyxl"
-    ) as writer:
+#         worksheet.auto_filter.ref = (
+#             f"A{header_row}:"
+#             f"D{worksheet.max_row}"
+#         )
 
-        statement_df.to_excel(
-            writer,
-            index=False,
-            sheet_name="Mini Statement",
-            startrow=7
-        )
+#         worksheet.freeze_panes = "A9"
 
-        worksheet = writer.sheets[
-            "Mini Statement"
-        ]
+#         # -------------------------------------------------
+#         # COLUMN WIDTHS
+#         # -------------------------------------------------
 
-        # -------------------------------------------------
-        # TITLE
-        # -------------------------------------------------
+#         worksheet.column_dimensions["A"].width = 15
+#         worksheet.column_dimensions["B"].width = 30
+#         worksheet.column_dimensions["C"].width = 22
+#         worksheet.column_dimensions["D"].width = 18
 
-        worksheet["A1"] = "QUICKBALANCE"
+#     return output.getvalue()
 
-        worksheet["A1"].font = Font(
-            bold=True,
-            size=20
-        )
 
-        worksheet["A2"] = "Mini Statement"
+# # =========================================================
+# # DOCUMENTS
+# # =========================================================
 
-        worksheet["A2"].font = Font(
-            bold=True,
-            size=14
-        )
+# def display_documents(statement, account_number):
 
-        # -------------------------------------------------
-        # CUSTOMER INFORMATION
-        # -------------------------------------------------
+#     excel_data = create_excel_statement(
+#         statement
+#     )
 
-        worksheet["A4"] = "Customer Name"
-        worksheet["B4"] = statement["customer"]["name"]
+#     with st.container(
+#         key="documents_card"
+#     ):
 
-        worksheet["A5"] = "Account Number"
-        worksheet["B5"] = (
-            statement["customer"]["account_number"]
-        )
+#         st.caption("DOCUMENTS")
 
-        worksheet["A6"] = "Account Type"
-        worksheet["B6"] = (
-            statement["customer"]["account_type"]
-        )
+#         st.markdown(
+#             "**Mini Statement**"
+#         )
 
-        worksheet["C4"] = "Current Balance"
+#         st.write(
+#             "View or download your latest mini statement."
+#         )
 
-        worksheet["D4"] = (
-            statement["balance"] / 100
-        )
+#         st.download_button(
+#             label="Download Statement",
+#             data=excel_data,
+#             file_name=(
+#                 f"xxxxxxx"
+#                 f"{account_number[-4:]}.xlsx"
+#             ),
+#             mime=(
+#                 "application/vnd.openxmlformats-officedocument."
+#                 "spreadsheetml.sheet"
+#             ),
+#             use_container_width=True,
+#             key="download_statement"
+#         )
 
-        for cell in [
-            "A4",
-            "A5",
-            "A6",
-            "C4"
-        ]:
 
-            worksheet[cell].font = Font(
-                bold=True
-            )
+# # =========================================================
+# # DASHBOARD PAGE
+# # =========================================================
 
-        worksheet["D4"].number_format = (
-            "R #,##0.00"
-        )
+# # def dashboard_page():
 
-        worksheet["D4"].font = Font(
-            bold=True
-        )
+# #     customer_id = st.session_state.customer_id
 
-        # -------------------------------------------------
-        # TRANSACTION TABLE
-        # -------------------------------------------------
+# #     accounts = get_customer_accounts(
+# #         customer_id
+# #     )
 
-        header_row = 8
+# #     if not accounts:
 
-        for cell in worksheet[header_row]:
+# #         st.error(
+# #             "No accounts found for this customer."
+# #         )
 
-            cell.font = Font(
-                bold=True
-            )
+# #         return
 
-            cell.alignment = Alignment(
-                horizontal="center"
-            )
+# #     account_options = {
+# #         account[5]: account[0]
+# #         for account in accounts
+# #     }
 
-        for row in range(
-            header_row + 1,
-            worksheet.max_row + 1
-        ):
+# #     selected_account_type = st.selectbox(
+# #         "Select account",
+# #         options=list(account_options.keys())
+# #     )
 
-            worksheet.cell(
-                row=row,
-                column=4
-            ).number_format = (
-                "R #,##0.00"
-            )
+# #     selected_account_id = account_options[
+# #         selected_account_type
+# #     ]
+    
+# #     dashboard = get_account_dashboard(
+# #         customer_id,
+# #         selected_account_id
+# #     )
 
-        # -------------------------------------------------
-        # FILTER + FREEZE
-        # -------------------------------------------------
+# #     if dashboard is None:
 
-        worksheet.auto_filter.ref = (
-            f"A{header_row}:"
-            f"D{worksheet.max_row}"
-        )
+# #         st.error(
+# #             "Unable to retrieve customer information."
+# #         )
 
-        worksheet.freeze_panes = "A9"
+# #         return
 
-        # -------------------------------------------------
-        # COLUMN WIDTHS
-        # -------------------------------------------------
+# #     # transactions = get_recent_transactions(
+# #     #     customer_id,
+# #     #     limit=5
+# #     # )
 
-        worksheet.column_dimensions["A"].width = 15
-        worksheet.column_dimensions["B"].width = 30
-        worksheet.column_dimensions["C"].width = 22
-        worksheet.column_dimensions["D"].width = 18
+# #     transactions = get_account_transactions(
+# #         selected_account_id,
+# #         limit=5
+# #     )
 
-    return output.getvalue()
+# #     # -----------------------------------------------------
+# #     # ACCOUNT
+# #     # -----------------------------------------------------
 
+# #     display_account_card(
+# #         dashboard
+# #     )
 
-# =========================================================
-# DOCUMENTS
-# =========================================================
+# #     # -----------------------------------------------------
+# #     # MAIN DASHBOARD
+# #     # -----------------------------------------------------
 
-def display_documents(statement, account_number):
+# #     left_column, right_column = st.columns(
+# #         [2.2, 1],
+# #         gap="medium"
+# #     )
 
-    excel_data = create_excel_statement(
-        statement
-    )
+# #     with left_column:
 
-    with st.container(
-        key="documents_card"
-    ):
+# #         display_recent_transactions(
+# #             transactions
+# #         )
 
-        st.caption("DOCUMENTS")
+# #     with right_column:
 
-        st.markdown(
-            "**Mini Statement**"
-        )
+# #         display_monthly_summary(
+# #             transactions
+# #         )
 
-        st.write(
-            "View or download your latest mini statement."
-        )
+# #         # statement = generate_mini_statement(
+# #         #     customer_id
+# #         # )
 
-        st.download_button(
-            label="Download Statement",
-            data=excel_data,
-            file_name=(
-                f"xxxxxxx"
-                f"{account_number[-4:]}.xlsx"
-            ),
-            mime=(
-                "application/vnd.openxmlformats-officedocument."
-                "spreadsheetml.sheet"
-            ),
-            use_container_width=True,
-            key="download_statement"
-        )
+# #         # if statement is not None:
 
+# #         #     display_documents(
+# #         #         statement,
+# #         #         dashboard["account_number"]
+# #         #     )
 
-# =========================================================
-# DASHBOARD PAGE
-# =========================================================
+# #         statement = {
+# #             "customer": {
+# #                 "name": (
+# #                     f"{dashboard['first_name']} "
+# #                     f"{dashboard['last_name']}"
+# #                 ),
+# #                 "account_number": dashboard["account_number"],
+# #                 "account_type": dashboard["acc_type"]
+# #             },
+# #             "balance": dashboard["balance"],
+# #             "transactions": transactions
+# #         }
+
+# #         display_documents(
+# #             statement,
+# #             dashboard["account_number"]
+# #         )
+
+# #     # -----------------------------------------------------
+# #     # LOGOUT
+# #     # -----------------------------------------------------
+
+# #     if st.button(
+# #         "Logout",
+# #         use_container_width=True,
+# #         key="logout_button"
+# #     ):
+
+# #         st.session_state.authenticated = False
+# #         st.session_state.customer_id = None
+
+# #         st.rerun()
 
 # def dashboard_page():
 
@@ -655,49 +781,26 @@ def display_documents(statement, account_number):
 
 #         return
 
-#     account_options = {
-#         account[5]: account[0]
-#         for account in accounts
-#     }
-
-#     selected_account_type = st.selectbox(
-#         "Select account",
-#         options=list(account_options.keys())
-#     )
-
-#     selected_account_id = account_options[
-#         selected_account_type
-#     ]
-    
-#     dashboard = get_account_dashboard(
-#         customer_id,
-#         selected_account_id
-#     )
-
-#     if dashboard is None:
-
-#         st.error(
-#             "Unable to retrieve customer information."
-#         )
-
-#         return
-
-#     # transactions = get_recent_transactions(
-#     #     customer_id,
-#     #     limit=5
-#     # )
-
-#     transactions = get_account_transactions(
-#         selected_account_id,
-#         limit=5
-#     )
-
 #     # -----------------------------------------------------
 #     # ACCOUNT
 #     # -----------------------------------------------------
 
-#     display_account_card(
-#         dashboard
+#     dashboard, selected_account_id = display_account_card(
+#         customer_id,
+#         accounts
+#     )
+
+#     if dashboard is None:
+
+#         return
+
+#     # -----------------------------------------------------
+#     # TRANSACTIONS
+#     # -----------------------------------------------------
+
+#     transactions = get_account_transactions(
+#         selected_account_id,
+#         limit=5
 #     )
 
 #     # -----------------------------------------------------
@@ -721,25 +824,18 @@ def display_documents(statement, account_number):
 #             transactions
 #         )
 
-#         # statement = generate_mini_statement(
-#         #     customer_id
-#         # )
-
-#         # if statement is not None:
-
-#         #     display_documents(
-#         #         statement,
-#         #         dashboard["account_number"]
-#         #     )
-
 #         statement = {
 #             "customer": {
 #                 "name": (
 #                     f"{dashboard['first_name']} "
 #                     f"{dashboard['last_name']}"
 #                 ),
-#                 "account_number": dashboard["account_number"],
-#                 "account_type": dashboard["acc_type"]
+#                 "account_number": (
+#                     dashboard["account_number"]
+#                 ),
+#                 "account_type": (
+#                     dashboard["acc_type"]
+#                 )
 #             },
 #             "balance": dashboard["balance"],
 #             "transactions": transactions
@@ -765,111 +861,34 @@ def display_documents(statement, account_number):
 
 #         st.rerun()
 
-def dashboard_page():
 
-    customer_id = st.session_state.customer_id
+# # =========================================================
+# # APPLICATION ENTRY POINT
+# # =========================================================
 
-    accounts = get_customer_accounts(
-        customer_id
-    )
+# if not st.session_state.authenticated:
 
-    if not accounts:
+#     login_page()
 
-        st.error(
-            "No accounts found for this customer."
-        )
+# else:
 
-        return
+#     dashboard_page()
 
-    # -----------------------------------------------------
-    # ACCOUNT
-    # -----------------------------------------------------
+import streamlit as st
 
-    dashboard, selected_account_id = display_account_card(
-        customer_id,
-        accounts
-    )
+st.set_page_config(
+    page_title="Selectbox Test"
+)
 
-    if dashboard is None:
+st.title("Streamlit Selectbox Test")
 
-        return
+account = st.selectbox(
+    "Select account",
+    [
+        "Cheque",
+        "Savings",
+        "Credit Card"
+    ]
+)
 
-    # -----------------------------------------------------
-    # TRANSACTIONS
-    # -----------------------------------------------------
-
-    transactions = get_account_transactions(
-        selected_account_id,
-        limit=5
-    )
-
-    # -----------------------------------------------------
-    # MAIN DASHBOARD
-    # -----------------------------------------------------
-
-    left_column, right_column = st.columns(
-        [2.2, 1],
-        gap="medium"
-    )
-
-    with left_column:
-
-        display_recent_transactions(
-            transactions
-        )
-
-    with right_column:
-
-        display_monthly_summary(
-            transactions
-        )
-
-        statement = {
-            "customer": {
-                "name": (
-                    f"{dashboard['first_name']} "
-                    f"{dashboard['last_name']}"
-                ),
-                "account_number": (
-                    dashboard["account_number"]
-                ),
-                "account_type": (
-                    dashboard["acc_type"]
-                )
-            },
-            "balance": dashboard["balance"],
-            "transactions": transactions
-        }
-
-        display_documents(
-            statement,
-            dashboard["account_number"]
-        )
-
-    # -----------------------------------------------------
-    # LOGOUT
-    # -----------------------------------------------------
-
-    if st.button(
-        "Logout",
-        use_container_width=True,
-        key="logout_button"
-    ):
-
-        st.session_state.authenticated = False
-        st.session_state.customer_id = None
-
-        st.rerun()
-
-
-# =========================================================
-# APPLICATION ENTRY POINT
-# =========================================================
-
-if not st.session_state.authenticated:
-
-    login_page()
-
-else:
-
-    dashboard_page()
+st.write("Selected account:", account)
