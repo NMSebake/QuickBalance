@@ -164,31 +164,7 @@ def get_customer_by_username(username):
 
 
 
-def get_account(customer_id):
-    """
-    Retrieve the account belonging to a customer.
-    """
 
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    cursor.execute("""
-        SELECT
-            account_id,
-            customer_id,
-            account_number,
-            balance,
-            acc_type
-        FROM accounts
-        WHERE customer_id = ?
-    """, (customer_id,))
-
-    account = cursor.fetchone()
-
-    connection.close()
-
-    return account
 
 
 
