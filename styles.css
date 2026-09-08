@@ -81,7 +81,7 @@ label {
 [data-testid="stCaptionContainer"] {
     color: #AFC9E7 !important;
 
-    font-size: 12px;
+    font-size: 17px;
 }
 
 
@@ -89,6 +89,11 @@ label {
 
 .st-key-account_card
 [data-testid="stMarkdownContainer"] p {
+
+    font-size: 30px;
+
+    font-weight: 200;
+
     color: #FFFFFF;
 }
 

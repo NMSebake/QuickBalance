@@ -138,10 +138,10 @@ def display_account_card(dashboard):
         key="account_card"
     ):
 
-        st.caption("CURRENT ACCOUNT")
+        st.caption("QuickBalance")
 
         st.markdown(
-            f"**{account_number}**"
+            f"Account number: **{account_number}**"
         )
 
         st.success(
