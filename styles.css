@@ -1,6 +1,5 @@
 /* =========================================================
    QUICKBALANCE
-   Standard Bank-inspired colour scheme
    ========================================================= */
 
 
@@ -95,6 +94,22 @@ label {
     font-weight: 200;
 
     color: #FFFFFF;
+}
+
+
+
+/* =========================================================
+   ACCOUNT SELECTOR
+   ========================================================= */
+
+.st-key-account_card [data-testid="stSelectbox"] label {
+    color: #D8E8FA !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.st-key-account_card [data-testid="stSelectbox"] > div {
+    color: #17324D !important;
 }
 
 
