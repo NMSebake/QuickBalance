@@ -40,7 +40,7 @@ label {
    ACCOUNT CARD
    ========================================================= */
 
-.st-key-account_card {
+/* .st-key-account_card {
     background:
         linear-gradient(
             135deg,
@@ -59,6 +59,35 @@ label {
 
     box-shadow:
         0 8px 24px rgba(0, 59, 122, 0.18);
+} */
+
+.st-key-account_card [data-testid="stAlert"] {
+    width: 250px;
+
+    margin: 15px auto;
+
+    padding: 8px 12px;
+
+    background-color: #E6F7F3 !important;
+
+    border: none !important;
+
+    border-radius: 10px;
+}
+
+
+/* Available Balance text */
+
+.st-key-account_card [data-testid="stAlert"] p {
+    color: #00A88F !important;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    margin: 0;
 }
 
 
