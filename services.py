@@ -158,5 +158,3 @@ def get_account_transactions(account_id, limit=5):
         account_id,
         limit
     )
-
-# Testing automatic pytest execution
