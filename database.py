@@ -47,6 +47,63 @@ def get_customer(customer_id):
 
 
 
+def get_accounts(customer_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            account_id,
+            customer_id,
+            account_number,
+            balance,
+            available_balance,
+            acc_type
+        FROM accounts
+        WHERE customer_id = ?
+        ORDER BY account_id
+        """,
+        (customer_id,)
+    )
+
+    accounts = cursor.fetchall()
+
+    connection.close()
+
+    return accounts
+
+
+
+def get_account(account_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            account_id,
+            customer_id,
+            account_number,
+            balance,
+            available_balance,
+            acc_type
+        FROM accounts
+        WHERE account_id = ?
+        """,
+        (account_id,)
+    )
+
+    account = cursor.fetchone()
+
+    connection.close()
+
+    return account
+
+
+
 
 def get_recent_transactions(account_id, limit=5):
     """
@@ -132,3 +189,28 @@ def get_account(customer_id):
     connection.close()
 
     return account
+
+
+
+def get_monthly_totals(account_id):
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            transaction_type,
+            COALESCE(SUM(amount), 0)
+        FROM transactions
+        WHERE account_id = ?
+        GROUP BY transaction_type
+        """,
+        (account_id,)
+    )
+
+    totals = cursor.fetchall()
+
+    connection.close()
+
+    return totals

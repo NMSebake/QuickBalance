@@ -1,6 +1,7 @@
 from database import (
     get_customer,
     get_customer_by_username,
+    get_accounts,
     get_account,
     get_recent_transactions as db_get_recent_transactions
 )
@@ -105,3 +106,56 @@ def generate_mini_statement(customer_id):
         "balance": dashboard["balance"],
         "transactions": transactions
     }
+
+
+
+def get_customer_accounts(customer_id):
+
+    customer = get_customer(customer_id)
+
+    if customer is None:
+        return []
+
+    return get_accounts(customer_id)
+
+
+
+def get_account_dashboard(customer_id, account_id):
+
+    customer = get_customer(customer_id)
+
+    if customer is None:
+        return None
+
+    account = get_account(account_id)
+
+    if account is None:
+        return None
+
+    # Make sure the account belongs to this customer
+    if account[1] != customer_id:
+        return None
+
+    return {
+        "customer_id": customer[0],
+        "id_no": customer[1],
+        "username": customer[2],
+        "first_name": customer[3],
+        "last_name": customer[4],
+
+        "account_id": account[0],
+        "account_number": account[2],
+        "balance": account[3],
+        "available_balance": account[4],
+        "acc_type": account[5]
+    }
+
+
+
+def get_account_transactions(account_id, limit=5):
+
+    return db_get_recent_transactions(
+        account_id,
+        limit
+    )
+

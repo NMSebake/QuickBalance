@@ -10,7 +10,8 @@ from services import (
     authenticate_customer,
     get_customer_dashboard,
     get_recent_transactions,
-    generate_mini_statement
+    generate_mini_statement,
+    get_customer_accounts
 )
 
 
@@ -341,6 +342,8 @@ def display_monthly_summary(transactions):
             )
 
 
+
+
 # =========================================================
 # MINI STATEMENT
 # =========================================================
@@ -549,8 +552,35 @@ def dashboard_page():
 
     customer_id = st.session_state.customer_id
 
-    dashboard = get_customer_dashboard(
+    accounts = get_customer_accounts(
         customer_id
+    )
+
+    if not accounts:
+
+        st.error(
+            "No accounts found for this customer."
+        )
+
+        return
+
+    account_options = {
+        account[5]: account[0]
+        for account in accounts
+    }
+
+    selected_account_type = st.selectbox(
+        "Select account",
+        options=list(account_options.keys())
+    )
+
+    selected_account_id = account_options[
+        selected_account_type
+    ]
+    
+    dashboard = get_customer_dashboard(
+        customer_id,
+        selected_account_id
     )
 
     if dashboard is None:
@@ -561,8 +591,13 @@ def dashboard_page():
 
         return
 
+    # transactions = get_recent_transactions(
+    #     customer_id,
+    #     limit=5
+    # )
+
     transactions = get_recent_transactions(
-        customer_id,
+        selected_account_id,
         limit=5
     )
 
