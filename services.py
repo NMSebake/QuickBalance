@@ -179,6 +179,7 @@ from database import (
 )
 
 
+
 def authenticate_customer(username, password):
     """
     Authenticate a customer using username and password.
