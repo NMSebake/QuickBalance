@@ -1,9 +1,13 @@
 import sqlite3
 from pathlib import Path
 
+from argon2 import PasswordHasher
+
 
 # Database location
 DATABASE_PATH = Path("data/quickbalance.db")
+
+password_hasher = PasswordHasher()
 
 
 def create_database():
@@ -93,6 +97,26 @@ def create_database():
         ("CUST1018", "8701135800098", "themba.mt", "Themba", "Mthethwa", "Pass1018"),
         ("CUST1019", "9306045800099", "refilwe.mo", "Refilwe", "Modise", "Pass1019"),
         ("CUST1020", "8909255800100", "andile.c", "Andile", "Cele", "Pass1020")
+    ]
+
+
+    customers = [
+        (
+            customer_id,
+            id_no,
+            username,
+            first_name,
+            last_name,
+            password_hasher.hash(password)
+        )
+        for (
+            customer_id,
+            id_no,
+            username,
+            first_name,
+            last_name,
+            password
+        ) in customers
     ]
 
     cursor.executemany("""

@@ -1,3 +1,4 @@
+from argon2 import PasswordHasher
 
 from database import (
     get_customer,
@@ -7,6 +8,17 @@ from database import (
     get_recent_transactions as db_get_recent_transactions
 )
 
+password_hasher = PasswordHasher()
+
+
+def hash_password(password):
+    """
+    Hash a password using Argon2id.
+
+    Returns the hashed password.
+    """
+
+    return password_hasher.hash(password)
 
 
 def authenticate_customer(username, password):
@@ -27,9 +39,15 @@ def authenticate_customer(username, password):
     if customer is None:
         return None
 
-    stored_password = customer[5]
+    stored_password_hash = customer[5]
 
-    if password != stored_password:
+    try:
+        password_hasher.verify(
+            stored_password_hash,
+            password
+        )
+
+    except Exception:
         return None
 
     return customer

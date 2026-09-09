@@ -8,6 +8,7 @@ sys.path.insert(
 )
 
 from services import (
+    authenticate_customer,
     get_customer_accounts,
     get_account_dashboard,
     get_account_transactions,
@@ -144,3 +145,51 @@ def test_mini_statement_cannot_access_another_customers_account():
     )
 
     assert statement is None
+
+
+
+def test_authentication_succeeds_with_correct_password():
+    customer = authenticate_customer(
+        "thabo.m",
+        "Pass1001"
+    )
+
+    assert customer is not None
+    assert customer[0] == "CUST1001"
+    assert customer[2] == "thabo.m"
+
+
+
+def test_authentication_fails_with_wrong_password():
+    customer = authenticate_customer(
+        "thabo.m",
+        "WrongPassword"
+    )
+
+    assert customer is None
+
+
+
+def test_authentication_fails_for_unknown_username():
+    customer = authenticate_customer(
+        "unknown.user",
+        "Pass1001"
+    )
+
+    assert customer is None
+
+
+
+def test_authentication_fails_with_missing_credentials():
+    assert authenticate_customer(
+        "",
+        "Pass1001"
+    ) is None
+
+    assert authenticate_customer(
+        "thabo.m",
+        ""
+    ) is None
+
+
+
