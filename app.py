@@ -289,6 +289,35 @@ def display_transaction(transaction):
 # RECENT TRANSACTIONS
 # =========================================================
 
+# Filtering function
+def filter_transactions(
+    transactions,
+    search_text="",
+    transaction_type="All"
+):
+    filtered_transactions = transactions
+
+    if search_text:
+
+        filtered_transactions = [
+            transaction
+            for transaction in filtered_transactions
+            if search_text.lower()
+            in transaction[2].lower()
+        ]
+
+    if transaction_type != "All":
+
+        filtered_transactions = [
+            transaction
+            for transaction in filtered_transactions
+            if transaction[3] == transaction_type
+        ]
+
+    return filtered_transactions
+
+
+
 def display_recent_transactions(transactions):
 
     with st.container(
@@ -320,9 +349,64 @@ def display_recent_transactions(transactions):
 
             return
 
-        for transaction in transactions:
+        # ---------------------------------------------
+        # TRANSACTION FILTERS
+        # ---------------------------------------------
 
-            display_transaction(transaction)
+        search_column, type_column = st.columns(
+            [2, 1]
+        )
+
+        with search_column:
+
+            search_text = st.text_input(
+                "Search",
+                placeholder="Search transactions...",
+                key="transaction_search"
+            )
+
+        with type_column:
+
+            transaction_type = st.selectbox(
+                "Transaction type",
+                options=[
+                    "All",
+                    "Credit",
+                    "Debit"
+                ],
+                key="transaction_type_filter"
+            )
+
+        # ---------------------------------------------
+        # FILTER TRANSACTIONS
+        # ---------------------------------------------
+
+        filtered_transactions = filter_transactions(
+            transactions,
+            search_text,
+            transaction_type
+        )
+
+        # ---------------------------------------------
+        # DISPLAY RESULTS
+        # ---------------------------------------------
+
+        if not filtered_transactions:
+
+            st.info(
+                "No transactions match your search."
+            )
+
+            return
+
+        for transaction in filtered_transactions:
+
+            display_transaction(
+                transaction
+            )
+
+
+
 
 
 # =========================================================

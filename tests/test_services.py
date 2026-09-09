@@ -16,6 +16,8 @@ from services import (
 )
 
 
+
+
 def test_customer_has_three_accounts():
 
     accounts = get_customer_accounts("CUST1001")
@@ -206,3 +208,5 @@ def test_each_account_type_has_transactions():
         )
 
         assert len(transactions) == 5
+
+
