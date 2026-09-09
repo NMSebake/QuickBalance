@@ -10,7 +10,8 @@ sys.path.insert(
 from services import (
     get_customer_accounts,
     get_account_dashboard,
-    get_account_transactions
+    get_account_transactions,
+    mini_statement
 )
 
 
@@ -107,3 +108,39 @@ def test_transaction_limit_works():
     )
 
     assert len(transactions) == 2
+
+
+
+def test_mini_statement_returns_selected_account_details():
+    accounts = get_customer_accounts("CUST1001")
+    account_id = accounts[0][0]
+
+    statement = mini_statement(
+        "CUST1001",
+        account_id
+    )
+
+    assert statement is not None
+
+    assert statement["customer"]["customer_id"] == "CUST1001"
+    assert statement["customer"]["account_number"] == accounts[0][2]
+    assert statement["customer"]["account_type"] == accounts[0][5]
+
+    assert statement["balance"] == accounts[0][3]
+
+    assert len(statement["transactions"]) == 5
+
+
+
+def test_mini_statement_cannot_access_another_customers_account():
+    customer_one_accounts = get_customer_accounts("CUST1001")
+    customer_two_accounts = get_customer_accounts("CUST1002")
+
+    customer_two_account_id = customer_two_accounts[0][0]
+
+    statement = mini_statement(
+        "CUST1001",
+        customer_two_account_id
+    )
+
+    assert statement is None

@@ -10,7 +10,8 @@ from services import (
     authenticate_customer,
     get_customer_accounts,
     get_account_dashboard,
-    get_account_transactions
+    get_account_transactions,
+    mini_statement
 )
 
 
@@ -125,52 +126,6 @@ def login_page():
 # ACCOUNT CARD
 # =========================================================
 
-# def display_account_card(dashboard):
-
-#     first_name = dashboard["first_name"]
-#     last_name = dashboard["last_name"]
-
-#     account_number = dashboard["account_number"]
-#     account_type = dashboard["acc_type"]
-
-#     balance = dashboard["balance"]
-#     balance_rands = balance / 100
-
-#     with st.container(
-#         key="account_card"
-#     ):
-
-#         st.caption("QuickBalance")
-
-#         st.markdown(
-#             f"Account number: **{account_number}**"
-#         )
-
-#         st.success(
-#             "Available Balance"
-#         )
-
-#         st.markdown(
-#             f"## R{balance_rands:,.2f}"
-#         )
-
-#         holder_column, type_column = st.columns(2)
-
-#         with holder_column:
-
-#             st.caption("Account holder")
-
-#             st.markdown(
-#                 f"**{first_name} {last_name}**"
-#             )
-
-#         with type_column:
-
-#             st.caption("Account type")
-
-#             st.markdown(
-#                 f"**{account_type}**"
-#             )
 
 def display_account_card(customer_id, accounts):
 
@@ -194,11 +149,6 @@ def display_account_card(customer_id, accounts):
             selected_account_type
         ]
 
-        st.write(
-            "DEBUG:",
-            selected_account_type,
-            selected_account_id
-        )
 
         # -------------------------------------------------
         # GET SELECTED ACCOUNT
@@ -635,135 +585,7 @@ def display_documents(statement, account_number):
         )
 
 
-# =========================================================
-# DASHBOARD PAGE
-# =========================================================
 
-# def dashboard_page():
-
-#     customer_id = st.session_state.customer_id
-
-#     accounts = get_customer_accounts(
-#         customer_id
-#     )
-
-#     if not accounts:
-
-#         st.error(
-#             "No accounts found for this customer."
-#         )
-
-#         return
-
-#     account_options = {
-#         account[5]: account[0]
-#         for account in accounts
-#     }
-
-#     selected_account_type = st.selectbox(
-#         "Select account",
-#         options=list(account_options.keys())
-#     )
-
-#     selected_account_id = account_options[
-#         selected_account_type
-#     ]
-    
-#     dashboard = get_account_dashboard(
-#         customer_id,
-#         selected_account_id
-#     )
-
-#     if dashboard is None:
-
-#         st.error(
-#             "Unable to retrieve customer information."
-#         )
-
-#         return
-
-#     # transactions = get_recent_transactions(
-#     #     customer_id,
-#     #     limit=5
-#     # )
-
-#     transactions = get_account_transactions(
-#         selected_account_id,
-#         limit=5
-#     )
-
-#     # -----------------------------------------------------
-#     # ACCOUNT
-#     # -----------------------------------------------------
-
-#     display_account_card(
-#         dashboard
-#     )
-
-#     # -----------------------------------------------------
-#     # MAIN DASHBOARD
-#     # -----------------------------------------------------
-
-#     left_column, right_column = st.columns(
-#         [2.2, 1],
-#         gap="medium"
-#     )
-
-#     with left_column:
-
-#         display_recent_transactions(
-#             transactions
-#         )
-
-#     with right_column:
-
-#         display_monthly_summary(
-#             transactions
-#         )
-
-#         # statement = generate_mini_statement(
-#         #     customer_id
-#         # )
-
-#         # if statement is not None:
-
-#         #     display_documents(
-#         #         statement,
-#         #         dashboard["account_number"]
-#         #     )
-
-#         statement = {
-#             "customer": {
-#                 "name": (
-#                     f"{dashboard['first_name']} "
-#                     f"{dashboard['last_name']}"
-#                 ),
-#                 "account_number": dashboard["account_number"],
-#                 "account_type": dashboard["acc_type"]
-#             },
-#             "balance": dashboard["balance"],
-#             "transactions": transactions
-#         }
-
-#         display_documents(
-#             statement,
-#             dashboard["account_number"]
-#         )
-
-#     # -----------------------------------------------------
-#     # LOGOUT
-#     # -----------------------------------------------------
-
-#     if st.button(
-#         "Logout",
-#         use_container_width=True,
-#         key="logout_button"
-#     ):
-
-#         st.session_state.authenticated = False
-#         st.session_state.customer_id = None
-
-#         st.rerun()
 
 def dashboard_page():
 
@@ -824,27 +646,25 @@ def dashboard_page():
             transactions
         )
 
-        statement = {
-            "customer": {
-                "name": (
-                    f"{dashboard['first_name']} "
-                    f"{dashboard['last_name']}"
-                ),
-                "account_number": (
-                    dashboard["account_number"]
-                ),
-                "account_type": (
-                    dashboard["acc_type"]
-                )
-            },
-            "balance": dashboard["balance"],
-            "transactions": transactions
-        }
 
-        display_documents(
-            statement,
-            dashboard["account_number"]
+        statement = mini_statement(
+            customer_id,
+            selected_account_id
         )
+
+        if statement is not None:
+
+            display_documents(
+                statement,
+                dashboard["account_number"]
+                )
+
+        else:
+
+            st.error(
+                "Unable to generate mini statement"
+            )
+
 
     # -----------------------------------------------------
     # LOGOUT
