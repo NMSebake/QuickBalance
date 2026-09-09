@@ -193,3 +193,16 @@ def test_authentication_fails_with_missing_credentials():
 
 
 
+def test_each_account_type_has_transactions():
+
+    accounts = get_customer_accounts("CUST1001")
+
+    for account in accounts:
+
+        account_id = account[0]
+
+        transactions = get_account_transactions(
+            account_id
+        )
+
+        assert len(transactions) == 5

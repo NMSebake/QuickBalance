@@ -66,7 +66,7 @@ def test_transaction_count():
 
     connection.close()
 
-    assert count == 100
+    assert count == 300
 
 
 def test_three_accounts_per_customer():
@@ -205,7 +205,44 @@ def test_each_account_has_transactions():
 
     connection.close()
 
-    assert len(results) == 20
+    assert len(results) == 60
 
     for account_id, transaction_count in results:
         assert transaction_count == 5
+
+
+
+def test_each_customer_has_five_transactions_per_account():
+
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+            a.customer_id,
+            a.acc_type,
+            COUNT(t.transaction_id)
+        FROM accounts a
+        LEFT JOIN transactions t
+            ON a.account_id = t.account_id
+        GROUP BY
+            a.customer_id,
+            a.acc_type
+        ORDER BY
+            a.customer_id,
+            a.acc_type
+        """
+    )
+
+    results = cursor.fetchall()
+
+    connection.close()
+
+    assert len(results) == 60
+
+    for customer_id, account_type, transaction_count in results:
+        assert transaction_count == 5
+
+
+

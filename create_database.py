@@ -229,152 +229,374 @@ def create_database():
         VALUES (?, ?, ?, ?)
     """, accounts)
 
-    # ---------------------------------------------------------
-    # MOCK TRANSACTIONS - 100 ENTRIES
-    # 5 TRANSACTIONS PER CUSTOMER
-    # ---------------------------------------------------------
 
+    # MOCK TRANSACTIONS - 300 ENTRIES
+    
     transactions = [
-        # CUST1001 / Account 1
-        (1, "2026-09-07", "Grocery Store", "Debit", 45000),
-        (1, "2026-09-06", "Salary", "Credit", 1800000),
-        (1, "2026-09-05", "Electricity", "Debit", 125000),
-        (1, "2026-09-04", "ATM Withdrawal", "Debit", 100000),
-        (1, "2026-09-03", "Transfer Received", "Credit", 250000),
 
-        # CUST1002 / Account 2
-        (2, "2026-09-07", "Fuel Station", "Debit", 65000),
-        (2, "2026-09-06", "Salary", "Credit", 1500000),
-        (2, "2026-09-05", "Mobile Payment", "Debit", 35000),
-        (2, "2026-09-04", "Online Shopping", "Debit", 120000),
-        (2, "2026-09-03", "Cash Deposit", "Credit", 500000),
+        ("CUST1001", "Cheque", "2026-09-07", "Grocery Store", "Debit", 45000),
+        ("CUST1001", "Cheque", "2026-09-06", "Salary", "Credit", 1800000),
+        ("CUST1001", "Cheque", "2026-09-05", "Electricity", "Debit", 125000),
+        ("CUST1001", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 100000),
+        ("CUST1001", "Cheque", "2026-09-03", "Transfer Received", "Credit", 250000),
+        ("CUST1001", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 100000),
+        ("CUST1001", "Savings", "2026-09-06", "Interest Earned", "Credit", 12500),
+        ("CUST1001", "Savings", "2026-09-05", "Online Transfer", "Debit", 50000),
+        ("CUST1001", "Savings", "2026-09-04", "Cash Deposit", "Credit", 75000),
+        ("CUST1001", "Savings", "2026-09-03", "Savings Contribution", "Credit", 150000),
+        ("CUST1001", "Credit Card", "2026-09-07", "Restaurant", "Debit", 85000),
+        ("CUST1001", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 120000),
+        ("CUST1001", "Credit Card", "2026-09-05", "Card Payment", "Debit", 45000),
+        ("CUST1001", "Credit Card", "2026-09-04", "Payment Received", "Credit", 200000),
+        ("CUST1001", "Credit Card", "2026-09-03", "Fuel Station", "Debit", 65000),
 
-        # CUST1003 / Account 3
-        (3, "2026-09-07", "Restaurant", "Debit", 85000),
-        (3, "2026-09-06", "Salary", "Credit", 2200000),
-        (3, "2026-09-05", "Water Bill", "Debit", 45000),
-        (3, "2026-09-04", "ATM Withdrawal", "Debit", 150000),
-        (3, "2026-09-03", "Transfer Received", "Credit", 300000),
+        ("CUST1002", "Cheque", "2026-09-07", "Fuel Station", "Debit", 65000),
+        ("CUST1002", "Cheque", "2026-09-06", "Salary", "Credit", 1500000),
+        ("CUST1002", "Cheque", "2026-09-05", "Mobile Payment", "Debit", 35000),
+        ("CUST1002", "Cheque", "2026-09-04", "Online Shopping", "Debit", 120000),
+        ("CUST1002", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 500000),
+        ("CUST1002", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 200000),
+        ("CUST1002", "Savings", "2026-09-06", "Interest Earned", "Credit", 15000),
+        ("CUST1002", "Savings", "2026-09-05", "Online Transfer", "Debit", 75000),
+        ("CUST1002", "Savings", "2026-09-04", "Cash Deposit", "Credit", 100000),
+        ("CUST1002", "Savings", "2026-09-03", "Savings Contribution", "Credit", 125000),
+        ("CUST1002", "Credit Card", "2026-09-07", "Restaurant", "Debit", 70000),
+        ("CUST1002", "Credit Card", "2026-09-06", "Fuel Station", "Debit", 55000),
+        ("CUST1002", "Credit Card", "2026-09-05", "Card Payment", "Debit", 40000),
+        ("CUST1002", "Credit Card", "2026-09-04", "Payment Received", "Credit", 150000),
+        ("CUST1002", "Credit Card", "2026-09-03", "Online Shopping", "Debit", 95000),
 
-        # CUST1004 / Account 4
-        (4, "2026-09-07", "Supermarket", "Debit", 55000),
-        (4, "2026-09-06", "Salary", "Credit", 1750000),
-        (4, "2026-09-05", "Internet Bill", "Debit", 79900),
-        (4, "2026-09-04", "ATM Withdrawal", "Debit", 80000),
-        (4, "2026-09-03", "Transfer Received", "Credit", 200000),
+        ("CUST1003", "Cheque", "2026-09-07", "Restaurant", "Debit", 85000),
+        ("CUST1003", "Cheque", "2026-09-06", "Salary", "Credit", 2200000),
+        ("CUST1003", "Cheque", "2026-09-05", "Water Bill", "Debit", 45000),
+        ("CUST1003", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 150000),
+        ("CUST1003", "Cheque", "2026-09-03", "Transfer Received", "Credit", 300000),
+        ("CUST1003", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 250000),
+        ("CUST1003", "Savings", "2026-09-06", "Interest Earned", "Credit", 18000),
+        ("CUST1003", "Savings", "2026-09-05", "Online Transfer", "Debit", 100000),
+        ("CUST1003", "Savings", "2026-09-04", "Cash Deposit", "Credit", 150000),
+        ("CUST1003", "Savings", "2026-09-03", "Savings Contribution", "Credit", 200000),
+        ("CUST1003", "Credit Card", "2026-09-07", "Restaurant", "Debit", 95000),
+        ("CUST1003", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 180000),
+        ("CUST1003", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 75000),
+        ("CUST1003", "Credit Card", "2026-09-04", "Payment Received", "Credit", 250000),
+        ("CUST1003", "Credit Card", "2026-09-03", "Card Payment", "Debit", 55000),
 
-        # CUST1005 / Account 5
-        (5, "2026-09-07", "Fuel Station", "Debit", 70000),
-        (5, "2026-09-06", "Salary", "Credit", 1400000),
-        (5, "2026-09-05", "Airtime", "Debit", 30000),
-        (5, "2026-09-04", "ATM Withdrawal", "Debit", 50000),
-        (5, "2026-09-03", "Cash Deposit", "Credit", 150000),
+        ("CUST1004", "Cheque", "2026-09-07", "Supermarket", "Debit", 55000),
+        ("CUST1004", "Cheque", "2026-09-06", "Salary", "Credit", 1750000),
+        ("CUST1004", "Cheque", "2026-09-05", "Internet Bill", "Debit", 79900),
+        ("CUST1004", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 80000),
+        ("CUST1004", "Cheque", "2026-09-03", "Transfer Received", "Credit", 200000),
+        ("CUST1004", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 175000),
+        ("CUST1004", "Savings", "2026-09-06", "Interest Earned", "Credit", 16000),
+        ("CUST1004", "Savings", "2026-09-05", "Online Transfer", "Debit", 85000),
+        ("CUST1004", "Savings", "2026-09-04", "Cash Deposit", "Credit", 120000),
+        ("CUST1004", "Savings", "2026-09-03", "Savings Contribution", "Credit", 180000),
+        ("CUST1004", "Credit Card", "2026-09-07", "Restaurant", "Debit", 75000),
+        ("CUST1004", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 110000),
+        ("CUST1004", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 60000),
+        ("CUST1004", "Credit Card", "2026-09-04", "Payment Received", "Credit", 175000),
+        ("CUST1004", "Credit Card", "2026-09-03", "Card Payment", "Debit", 45000),
 
-        # CUST1006 / Account 6
-        (6, "2026-09-07", "Grocery Store", "Debit", 95000),
-        (6, "2026-09-06", "Salary", "Credit", 1950000),
-        (6, "2026-09-05", "Electricity", "Debit", 110000),
-        (6, "2026-09-04", "Online Shopping", "Debit", 175000),
-        (6, "2026-09-03", "Transfer Received", "Credit", 400000),
+        ("CUST1005", "Cheque", "2026-09-07", "Fuel Station", "Debit", 70000),
+        ("CUST1005", "Cheque", "2026-09-06", "Salary", "Credit", 1400000),
+        ("CUST1005", "Cheque", "2026-09-05", "Airtime", "Debit", 30000),
+        ("CUST1005", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 50000),
+        ("CUST1005", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 150000),
+        ("CUST1005", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 125000),
+        ("CUST1005", "Savings", "2026-09-06", "Interest Earned", "Credit", 10000),
+        ("CUST1005", "Savings", "2026-09-05", "Online Transfer", "Debit", 60000),
+        ("CUST1005", "Savings", "2026-09-04", "Cash Deposit", "Credit", 90000),
+        ("CUST1005", "Savings", "2026-09-03", "Savings Contribution", "Credit", 100000),
+        ("CUST1005", "Credit Card", "2026-09-07", "Restaurant", "Debit", 60000),
+        ("CUST1005", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 90000),
+        ("CUST1005", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 50000),
+        ("CUST1005", "Credit Card", "2026-09-04", "Payment Received", "Credit", 125000),
+        ("CUST1005", "Credit Card", "2026-09-03", "Card Payment", "Debit", 35000),
 
-        # CUST1007 / Account 7
-        (7, "2026-09-07", "Restaurant", "Debit", 60000),
-        (7, "2026-09-06", "Salary", "Credit", 1350000),
-        (7, "2026-09-05", "Transport", "Debit", 45000),
-        (7, "2026-09-04", "ATM Withdrawal", "Debit", 100000),
-        (7, "2026-09-03", "Cash Deposit", "Credit", 100000),
+        ("CUST1006", "Cheque", "2026-09-07", "Grocery Store", "Debit", 95000),
+        ("CUST1006", "Cheque", "2026-09-06", "Salary", "Credit", 1950000),
+        ("CUST1006", "Cheque", "2026-09-05", "Electricity", "Debit", 110000),
+        ("CUST1006", "Cheque", "2026-09-04", "Online Shopping", "Debit", 175000),
+        ("CUST1006", "Cheque", "2026-09-03", "Transfer Received", "Credit", 400000),
+        ("CUST1006", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 225000),
+        ("CUST1006", "Savings", "2026-09-06", "Interest Earned", "Credit", 20000),
+        ("CUST1006", "Savings", "2026-09-05", "Online Transfer", "Debit", 125000),
+        ("CUST1006", "Savings", "2026-09-04", "Cash Deposit", "Credit", 175000),
+        ("CUST1006", "Savings", "2026-09-03", "Savings Contribution", "Credit", 250000),
+        ("CUST1006", "Credit Card", "2026-09-07", "Restaurant", "Debit", 105000),
+        ("CUST1006", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 150000),
+        ("CUST1006", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 85000),
+        ("CUST1006", "Credit Card", "2026-09-04", "Payment Received", "Credit", 300000),
+        ("CUST1006", "Credit Card", "2026-09-03", "Card Payment", "Debit", 65000),
 
-        # CUST1008 / Account 8
-        (8, "2026-09-07", "Supermarket", "Debit", 125000),
-        (8, "2026-09-06", "Salary", "Credit", 1600000),
-        (8, "2026-09-05", "Internet Bill", "Debit", 85000),
-        (8, "2026-09-04", "Fuel Station", "Debit", 90000),
-        (8, "2026-09-03", "Transfer Received", "Credit", 250000),
+        ("CUST1007", "Cheque", "2026-09-07", "Restaurant", "Debit", 60000),
+        ("CUST1007", "Cheque", "2026-09-06", "Salary", "Credit", 1350000),
+        ("CUST1007", "Cheque", "2026-09-05", "Transport", "Debit", 45000),
+        ("CUST1007", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 100000),
+        ("CUST1007", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 100000),
+        ("CUST1007", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 100000),
+        ("CUST1007", "Savings", "2026-09-06", "Interest Earned", "Credit", 9000),
+        ("CUST1007", "Savings", "2026-09-05", "Online Transfer", "Debit", 50000),
+        ("CUST1007", "Savings", "2026-09-04", "Cash Deposit", "Credit", 75000),
+        ("CUST1007", "Savings", "2026-09-03", "Savings Contribution", "Credit", 90000),
+        ("CUST1007", "Credit Card", "2026-09-07", "Restaurant", "Debit", 55000),
+        ("CUST1007", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 80000),
+        ("CUST1007", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 45000),
+        ("CUST1007", "Credit Card", "2026-09-04", "Payment Received", "Credit", 100000),
+        ("CUST1007", "Credit Card", "2026-09-03", "Card Payment", "Debit", 30000),
 
-        # CUST1009 / Account 9
-        (9, "2026-09-07", "Grocery Store", "Debit", 155000),
-        (9, "2026-09-06", "Salary", "Credit", 2500000),
-        (9, "2026-09-05", "Electricity", "Debit", 145000),
-        (9, "2026-09-04", "ATM Withdrawal", "Debit", 200000),
-        (9, "2026-09-03", "Transfer Received", "Credit", 500000),
+        ("CUST1008", "Cheque", "2026-09-07", "Supermarket", "Debit", 125000),
+        ("CUST1008", "Cheque", "2026-09-06", "Salary", "Credit", 1600000),
+        ("CUST1008", "Cheque", "2026-09-05", "Internet Bill", "Debit", 85000),
+        ("CUST1008", "Cheque", "2026-09-04", "Fuel Station", "Debit", 90000),
+        ("CUST1008", "Cheque", "2026-09-03", "Transfer Received", "Credit", 250000),
+        ("CUST1008", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 150000),
+        ("CUST1008", "Savings", "2026-09-06", "Interest Earned", "Credit", 14000),
+        ("CUST1008", "Savings", "2026-09-05", "Online Transfer", "Debit", 70000),
+        ("CUST1008", "Savings", "2026-09-04", "Cash Deposit", "Credit", 125000),
+        ("CUST1008", "Savings", "2026-09-03", "Savings Contribution", "Credit", 175000),
+        ("CUST1008", "Credit Card", "2026-09-07", "Restaurant", "Debit", 90000),
+        ("CUST1008", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 130000),
+        ("CUST1008", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 70000),
+        ("CUST1008", "Credit Card", "2026-09-04", "Payment Received", "Credit", 225000),
+        ("CUST1008", "Credit Card", "2026-09-03", "Card Payment", "Debit", 50000),
 
-        # CUST1010 / Account 10
-        (10, "2026-09-07", "Fuel Station", "Debit", 80000),
-        (10, "2026-09-06", "Salary", "Credit", 1450000),
-        (10, "2026-09-05", "Mobile Payment", "Debit", 40000),
-        (10, "2026-09-04", "Restaurant", "Debit", 90000),
-        (10, "2026-09-03", "Cash Deposit", "Credit", 200000),
+        ("CUST1009", "Cheque", "2026-09-07", "Grocery Store", "Debit", 155000),
+        ("CUST1009", "Cheque", "2026-09-06", "Salary", "Credit", 2500000),
+        ("CUST1009", "Cheque", "2026-09-05", "Electricity", "Debit", 145000),
+        ("CUST1009", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 200000),
+        ("CUST1009", "Cheque", "2026-09-03", "Transfer Received", "Credit", 500000),
+        ("CUST1009", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 300000),
+        ("CUST1009", "Savings", "2026-09-06", "Interest Earned", "Credit", 25000),
+        ("CUST1009", "Savings", "2026-09-05", "Online Transfer", "Debit", 150000),
+        ("CUST1009", "Savings", "2026-09-04", "Cash Deposit", "Credit", 200000),
+        ("CUST1009", "Savings", "2026-09-03", "Savings Contribution", "Credit", 350000),
+        ("CUST1009", "Credit Card", "2026-09-07", "Restaurant", "Debit", 120000),
+        ("CUST1009", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 200000),
+        ("CUST1009", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 95000),
+        ("CUST1009", "Credit Card", "2026-09-04", "Payment Received", "Credit", 350000),
+        ("CUST1009", "Credit Card", "2026-09-03", "Card Payment", "Debit", 75000),
 
-        # CUST1011 / Account 11
-        (11, "2026-09-07", "Online Shopping", "Debit", 135000),
-        (11, "2026-09-06", "Salary", "Credit", 1900000),
-        (11, "2026-09-05", "Water Bill", "Debit", 55000),
-        (11, "2026-09-04", "ATM Withdrawal", "Debit", 120000),
-        (11, "2026-09-03", "Transfer Received", "Credit", 350000),
+        ("CUST1010", "Cheque", "2026-09-07", "Fuel Station", "Debit", 80000),
+        ("CUST1010", "Cheque", "2026-09-06", "Salary", "Credit", 1450000),
+        ("CUST1010", "Cheque", "2026-09-05", "Mobile Payment", "Debit", 40000),
+        ("CUST1010", "Cheque", "2026-09-04", "Restaurant", "Debit", 90000),
+        ("CUST1010", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 200000),
+        ("CUST1010", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 150000),
+        ("CUST1010", "Savings", "2026-09-06", "Interest Earned", "Credit", 12000),
+        ("CUST1010", "Savings", "2026-09-05", "Online Transfer", "Debit", 60000),
+        ("CUST1010", "Savings", "2026-09-04", "Cash Deposit", "Credit", 100000),
+        ("CUST1010", "Savings", "2026-09-03", "Savings Contribution", "Credit", 125000),
+        ("CUST1010", "Credit Card", "2026-09-07", "Restaurant", "Debit", 65000),
+        ("CUST1010", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 100000),
+        ("CUST1010", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 55000),
+        ("CUST1010", "Credit Card", "2026-09-04", "Payment Received", "Credit", 150000),
+        ("CUST1010", "Credit Card", "2026-09-03", "Card Payment", "Debit", 40000),
 
-        # CUST1012 / Account 12
-        (12, "2026-09-07", "Supermarket", "Debit", 75000),
-        (12, "2026-09-06", "Salary", "Credit", 1550000),
-        (12, "2026-09-05", "Airtime", "Debit", 25000),
-        (12, "2026-09-04", "Fuel Station", "Debit", 65000),
-        (12, "2026-09-03", "Cash Deposit", "Credit", 100000),
+        ("CUST1011", "Cheque", "2026-09-07", "Online Shopping", "Debit", 135000),
+        ("CUST1011", "Cheque", "2026-09-06", "Salary", "Credit", 1900000),
+        ("CUST1011", "Cheque", "2026-09-05", "Water Bill", "Debit", 55000),
+        ("CUST1011", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 120000),
+        ("CUST1011", "Cheque", "2026-09-03", "Transfer Received", "Credit", 350000),
+        ("CUST1011", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 200000),
+        ("CUST1011", "Savings", "2026-09-06", "Interest Earned", "Credit", 17000),
+        ("CUST1011", "Savings", "2026-09-05", "Online Transfer", "Debit", 90000),
+        ("CUST1011", "Savings", "2026-09-04", "Cash Deposit", "Credit", 150000),
+        ("CUST1011", "Savings", "2026-09-03", "Savings Contribution", "Credit", 200000),
+        ("CUST1011", "Credit Card", "2026-09-07", "Restaurant", "Debit", 85000),
+        ("CUST1011", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 140000),
+        ("CUST1011", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 70000),
+        ("CUST1011", "Credit Card", "2026-09-04", "Payment Received", "Credit", 225000),
+        ("CUST1011", "Credit Card", "2026-09-03", "Card Payment", "Debit", 55000),
 
-        # CUST1013 / Account 13
-        (13, "2026-09-07", "Grocery Store", "Debit", 165000),
-        (13, "2026-09-06", "Salary", "Credit", 2300000),
-        (13, "2026-09-05", "Electricity", "Debit", 135000),
-        (13, "2026-09-04", "Online Shopping", "Debit", 220000),
-        (13, "2026-09-03", "Transfer Received", "Credit", 450000),
+        ("CUST1012", "Cheque", "2026-09-07", "Supermarket", "Debit", 75000),
+        ("CUST1012", "Cheque", "2026-09-06", "Salary", "Credit", 1550000),
+        ("CUST1012", "Cheque", "2026-09-05", "Airtime", "Debit", 25000),
+        ("CUST1012", "Cheque", "2026-09-04", "Fuel Station", "Debit", 65000),
+        ("CUST1012", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 100000),
+        ("CUST1012", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 125000),
+        ("CUST1012", "Savings", "2026-09-06", "Interest Earned", "Credit", 11000),
+        ("CUST1012", "Savings", "2026-09-05", "Online Transfer", "Debit", 50000),
+        ("CUST1012", "Savings", "2026-09-04", "Cash Deposit", "Credit", 100000),
+        ("CUST1012", "Savings", "2026-09-03", "Savings Contribution", "Credit", 125000),
+        ("CUST1012", "Credit Card", "2026-09-07", "Restaurant", "Debit", 60000),
+        ("CUST1012", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 85000),
+        ("CUST1012", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 50000),
+        ("CUST1012", "Credit Card", "2026-09-04", "Payment Received", "Credit", 125000),
+        ("CUST1012", "Credit Card", "2026-09-03", "Card Payment", "Debit", 35000),
 
-        # CUST1014 / Account 14
-        (14, "2026-09-07", "Restaurant", "Debit", 95000),
-        (14, "2026-09-06", "Salary", "Credit", 1700000),
-        (14, "2026-09-05", "Internet Bill", "Debit", 79900),
-        (14, "2026-09-04", "ATM Withdrawal", "Debit", 90000),
-        (14, "2026-09-03", "Cash Deposit", "Credit", 200000),
+        ("CUST1013", "Cheque", "2026-09-07", "Grocery Store", "Debit", 165000),
+        ("CUST1013", "Cheque", "2026-09-06", "Salary", "Credit", 2300000),
+        ("CUST1013", "Cheque", "2026-09-05", "Electricity", "Debit", 135000),
+        ("CUST1013", "Cheque", "2026-09-04", "Online Shopping", "Debit", 220000),
+        ("CUST1013", "Cheque", "2026-09-03", "Transfer Received", "Credit", 450000),
+        ("CUST1013", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 275000),
+        ("CUST1013", "Savings", "2026-09-06", "Interest Earned", "Credit", 23000),
+        ("CUST1013", "Savings", "2026-09-05", "Online Transfer", "Debit", 125000),
+        ("CUST1013", "Savings", "2026-09-04", "Cash Deposit", "Credit", 200000),
+        ("CUST1013", "Savings", "2026-09-03", "Savings Contribution", "Credit", 300000),
+        ("CUST1013", "Credit Card", "2026-09-07", "Restaurant", "Debit", 110000),
+        ("CUST1013", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 175000),
+        ("CUST1013", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 90000),
+        ("CUST1013", "Credit Card", "2026-09-04", "Payment Received", "Credit", 300000),
+        ("CUST1013", "Credit Card", "2026-09-03", "Card Payment", "Debit", 65000),
 
-        # CUST1015 / Account 15
-        (15, "2026-09-07", "Fuel Station", "Debit", 55000),
-        (15, "2026-09-06", "Salary", "Credit", 1300000),
-        (15, "2026-09-05", "Transport", "Debit", 35000),
-        (15, "2026-09-04", "Airtime", "Debit", 20000),
-        (15, "2026-09-03", "Transfer Received", "Credit", 150000),
+        ("CUST1014", "Cheque", "2026-09-07", "Restaurant", "Debit", 95000),
+        ("CUST1014", "Cheque", "2026-09-06", "Salary", "Credit", 1700000),
+        ("CUST1014", "Cheque", "2026-09-05", "Internet Bill", "Debit", 79900),
+        ("CUST1014", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 90000),
+        ("CUST1014", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 200000),
+        ("CUST1014", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 175000),
+        ("CUST1014", "Savings", "2026-09-06", "Interest Earned", "Credit", 15000),
+        ("CUST1014", "Savings", "2026-09-05", "Online Transfer", "Debit", 80000),
+        ("CUST1014", "Savings", "2026-09-04", "Cash Deposit", "Credit", 125000),
+        ("CUST1014", "Savings", "2026-09-03", "Savings Contribution", "Credit", 175000),
+        ("CUST1014", "Credit Card", "2026-09-07", "Restaurant", "Debit", 85000),
+        ("CUST1014", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 125000),
+        ("CUST1014", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 65000),
+        ("CUST1014", "Credit Card", "2026-09-04", "Payment Received", "Credit", 200000),
+        ("CUST1014", "Credit Card", "2026-09-03", "Card Payment", "Debit", 50000),
 
-        # CUST1016 / Account 16
-        (16, "2026-09-07", "Supermarket", "Debit", 115000),
-        (16, "2026-09-06", "Salary", "Credit", 2000000),
-        (16, "2026-09-05", "Electricity", "Debit", 120000),
-        (16, "2026-09-04", "Online Shopping", "Debit", 180000),
-        (16, "2026-09-03", "Transfer Received", "Credit", 300000),
+        ("CUST1015", "Cheque", "2026-09-07", "Fuel Station", "Debit", 55000),
+        ("CUST1015", "Cheque", "2026-09-06", "Salary", "Credit", 1300000),
+        ("CUST1015", "Cheque", "2026-09-05", "Transport", "Debit", 35000),
+        ("CUST1015", "Cheque", "2026-09-04", "Airtime", "Debit", 20000),
+        ("CUST1015", "Cheque", "2026-09-03", "Transfer Received", "Credit", 150000),
+        ("CUST1015", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 100000),
+        ("CUST1015", "Savings", "2026-09-06", "Interest Earned", "Credit", 8500),
+        ("CUST1015", "Savings", "2026-09-05", "Online Transfer", "Debit", 45000),
+        ("CUST1015", "Savings", "2026-09-04", "Cash Deposit", "Credit", 75000),
+        ("CUST1015", "Savings", "2026-09-03", "Savings Contribution", "Credit", 100000),
+        ("CUST1015", "Credit Card", "2026-09-07", "Restaurant", "Debit", 50000),
+        ("CUST1015", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 75000),
+        ("CUST1015", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 40000),
+        ("CUST1015", "Credit Card", "2026-09-04", "Payment Received", "Credit", 100000),
+        ("CUST1015", "Credit Card", "2026-09-03", "Card Payment", "Debit", 25000),
 
-        # CUST1017 / Account 17
-        (17, "2026-09-07", "Grocery Store", "Debit", 65000),
-        (17, "2026-09-06", "Salary", "Credit", 1450000),
-        (17, "2026-09-05", "Water Bill", "Debit", 50000),
-        (17, "2026-09-04", "ATM Withdrawal", "Debit", 75000),
-        (17, "2026-09-03", "Cash Deposit", "Credit", 125000),
+        ("CUST1016", "Cheque", "2026-09-07", "Supermarket", "Debit", 115000),
+        ("CUST1016", "Cheque", "2026-09-06", "Salary", "Credit", 2000000),
+        ("CUST1016", "Cheque", "2026-09-05", "Electricity", "Debit", 120000),
+        ("CUST1016", "Cheque", "2026-09-04", "Online Shopping", "Debit", 180000),
+        ("CUST1016", "Cheque", "2026-09-03", "Transfer Received", "Credit", 300000),
+        ("CUST1016", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 225000),
+        ("CUST1016", "Savings", "2026-09-06", "Interest Earned", "Credit", 20000),
+        ("CUST1016", "Savings", "2026-09-05", "Online Transfer", "Debit", 100000),
+        ("CUST1016", "Savings", "2026-09-04", "Cash Deposit", "Credit", 150000),
+        ("CUST1016", "Savings", "2026-09-03", "Savings Contribution", "Credit", 225000),
+        ("CUST1016", "Credit Card", "2026-09-07", "Restaurant", "Debit", 100000),
+        ("CUST1016", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 150000),
+        ("CUST1016", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 80000),
+        ("CUST1016", "Credit Card", "2026-09-04", "Payment Received", "Credit", 275000),
+        ("CUST1016", "Credit Card", "2026-09-03", "Card Payment", "Debit", 60000),
 
-        # CUST1018 / Account 18
-        (18, "2026-09-07", "Fuel Station", "Debit", 90000),
-        (18, "2026-09-06", "Salary", "Credit", 2100000),
-        (18, "2026-09-05", "Internet Bill", "Debit", 85000),
-        (18, "2026-09-04", "Restaurant", "Debit", 110000),
-        (18, "2026-09-03", "Transfer Received", "Credit", 400000),
+        ("CUST1017", "Cheque", "2026-09-07", "Grocery Store", "Debit", 65000),
+        ("CUST1017", "Cheque", "2026-09-06", "Salary", "Credit", 1450000),
+        ("CUST1017", "Cheque", "2026-09-05", "Water Bill", "Debit", 50000),
+        ("CUST1017", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 75000),
+        ("CUST1017", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 125000),
+        ("CUST1017", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 125000),
+        ("CUST1017", "Savings", "2026-09-06", "Interest Earned", "Credit", 12000),
+        ("CUST1017", "Savings", "2026-09-05", "Online Transfer", "Debit", 60000),
+        ("CUST1017", "Savings", "2026-09-04", "Cash Deposit", "Credit", 90000),
+        ("CUST1017", "Savings", "2026-09-03", "Savings Contribution", "Credit", 125000),
+        ("CUST1017", "Credit Card", "2026-09-07", "Restaurant", "Debit", 60000),
+        ("CUST1017", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 85000),
+        ("CUST1017", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 45000),
+        ("CUST1017", "Credit Card", "2026-09-04", "Payment Received", "Credit", 125000),
+        ("CUST1017", "Credit Card", "2026-09-03", "Card Payment", "Debit", 30000),
 
-        # CUST1019 / Account 19
-        (19, "2026-09-07", "Supermarket", "Debit", 105000),
-        (19, "2026-09-06", "Salary", "Credit", 1650000),
-        (19, "2026-09-05", "Mobile Payment", "Debit", 45000),
-        (19, "2026-09-04", "ATM Withdrawal", "Debit", 100000),
-        (19, "2026-09-03", "Cash Deposit", "Credit", 175000),
+        ("CUST1018", "Cheque", "2026-09-07", "Fuel Station", "Debit", 90000),
+        ("CUST1018", "Cheque", "2026-09-06", "Salary", "Credit", 2100000),
+        ("CUST1018", "Cheque", "2026-09-05", "Internet Bill", "Debit", 85000),
+        ("CUST1018", "Cheque", "2026-09-04", "Restaurant", "Debit", 110000),
+        ("CUST1018", "Cheque", "2026-09-03", "Transfer Received", "Credit", 400000),
+        ("CUST1018", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 250000),
+        ("CUST1018", "Savings", "2026-09-06", "Interest Earned", "Credit", 22000),
+        ("CUST1018", "Savings", "2026-09-05", "Online Transfer", "Debit", 125000),
+        ("CUST1018", "Savings", "2026-09-04", "Cash Deposit", "Credit", 200000),
+        ("CUST1018", "Savings", "2026-09-03", "Savings Contribution", "Credit", 275000),
+        ("CUST1018", "Credit Card", "2026-09-07", "Restaurant", "Debit", 115000),
+        ("CUST1018", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 175000),
+        ("CUST1018", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 90000),
+        ("CUST1018", "Credit Card", "2026-09-04", "Payment Received", "Credit", 300000),
+        ("CUST1018", "Credit Card", "2026-09-03", "Card Payment", "Debit", 70000),
 
-        # CUST1020 / Account 20
-        (20, "2026-09-07", "Grocery Store", "Debit", 85000),
-        (20, "2026-09-06", "Salary", "Credit", 1800000),
-        (20, "2026-09-05", "Electricity", "Debit", 130000),
-        (20, "2026-09-04", "Online Shopping", "Debit", 145000),
-        (20, "2026-09-03", "Transfer Received", "Credit", 275000)
+        ("CUST1019", "Cheque", "2026-09-07", "Supermarket", "Debit", 105000),
+        ("CUST1019", "Cheque", "2026-09-06", "Salary", "Credit", 1650000),
+        ("CUST1019", "Cheque", "2026-09-05", "Mobile Payment", "Debit", 45000),
+        ("CUST1019", "Cheque", "2026-09-04", "ATM Withdrawal", "Debit", 100000),
+        ("CUST1019", "Cheque", "2026-09-03", "Cash Deposit", "Credit", 175000),
+        ("CUST1019", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 175000),
+        ("CUST1019", "Savings", "2026-09-06", "Interest Earned", "Credit", 15000),
+        ("CUST1019", "Savings", "2026-09-05", "Online Transfer", "Debit", 75000),
+        ("CUST1019", "Savings", "2026-09-04", "Cash Deposit", "Credit", 125000),
+        ("CUST1019", "Savings", "2026-09-03", "Savings Contribution", "Credit", 150000),
+        ("CUST1019", "Credit Card", "2026-09-07", "Restaurant", "Debit", 75000),
+        ("CUST1019", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 110000),
+        ("CUST1019", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 60000),
+        ("CUST1019", "Credit Card", "2026-09-04", "Payment Received", "Credit", 175000),
+        ("CUST1019", "Credit Card", "2026-09-03", "Card Payment", "Debit", 45000),
+
+        ("CUST1020", "Cheque", "2026-09-07", "Grocery Store", "Debit", 85000),
+        ("CUST1020", "Cheque", "2026-09-06", "Salary", "Credit", 1800000),
+        ("CUST1020", "Cheque", "2026-09-05", "Electricity", "Debit", 130000),
+        ("CUST1020", "Cheque", "2026-09-04", "Online Shopping", "Debit", 145000),
+        ("CUST1020", "Cheque", "2026-09-03", "Transfer Received", "Credit", 275000),
+        ("CUST1020", "Savings", "2026-09-07", "Monthly Savings Transfer", "Credit", 200000),
+        ("CUST1020", "Savings", "2026-09-06", "Interest Earned", "Credit", 18000),
+        ("CUST1020", "Savings", "2026-09-05", "Online Transfer", "Debit", 100000),
+        ("CUST1020", "Savings", "2026-09-04", "Cash Deposit", "Credit", 150000),
+        ("CUST1020", "Savings", "2026-09-03", "Savings Contribution", "Credit", 200000),
+        ("CUST1020", "Credit Card", "2026-09-07", "Restaurant", "Debit", 90000),
+        ("CUST1020", "Credit Card", "2026-09-06", "Online Shopping", "Debit", 130000),
+        ("CUST1020", "Credit Card", "2026-09-05", "Fuel Station", "Debit", 70000),
+        ("CUST1020", "Credit Card", "2026-09-04", "Payment Received", "Credit", 225000),
+        ("CUST1020", "Credit Card", "2026-09-03", "Card Payment", "Debit", 50000)
+
     ]
+
+    resolved_transactions = []
+
+    for (
+        customer_id,
+        account_type,
+        transaction_date,
+        description,
+        transaction_type,
+        amount
+    ) in transactions:
+
+        cursor.execute(
+            """
+            SELECT account_id
+            FROM accounts
+            WHERE customer_id = ?
+            AND acc_type = ?
+            """,
+            (customer_id, account_type)
+        )
+
+        account = cursor.fetchone()
+
+        if account is None:
+            raise ValueError(
+                f"No {account_type} account found "
+                f"for customer {customer_id}"
+            )
+
+        account_id = account[0]
+
+        resolved_transactions.append(
+            (
+                account_id,
+                transaction_date,
+                description,
+                transaction_type,
+                amount
+            )
+        )
+
 
     cursor.executemany("""
         INSERT INTO transactions (
@@ -383,9 +605,9 @@ def create_database():
             description,
             transaction_type,
             amount
-        )
-        VALUES (?, ?, ?, ?, ?)
-    """, transactions)
+            )
+            VALUES (?, ?, ?, ?, ?)
+        """, resolved_transactions)
 
     # Save all changes
     connection.commit()
