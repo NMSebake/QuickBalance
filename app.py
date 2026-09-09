@@ -290,32 +290,51 @@ def display_transaction(transaction):
 # =========================================================
 
 # Filtering function
-def filter_transactions(
-    transactions,
-    search_text="",
-    transaction_type="All"
-):
-    filtered_transactions = transactions
+# def filter_transactions(
+#     transactions,
+#     search_text="",
+#     transaction_type="All"
+# ):
+#     filtered_transactions = transactions
 
-    if search_text:
+#     if search_text:
 
-        filtered_transactions = [
-            transaction
-            for transaction in filtered_transactions
-            if search_text.lower()
-            in transaction[2].lower()
-        ]
+#         filtered_transactions = [
+#             transaction
+#             for transaction in filtered_transactions
+#             if search_text.lower()
+#             in transaction[2].lower()
+#         ]
 
-    if transaction_type != "All":
+#     if transaction_type != "All":
 
-        filtered_transactions = [
-            transaction
-            for transaction in filtered_transactions
-            if transaction[3] == transaction_type
-        ]
+#         filtered_transactions = [
+#             transaction
+#             for transaction in filtered_transactions
+#             if transaction[3] == transaction_type
+#         ]
 
-    return filtered_transactions
+#     # return filtered_transactions
 
+
+#     with count_column:
+#         count = len(filtered_transactions)
+
+#         if count == 1:
+#             st.caption("1 transaction")
+#         else:
+#             st.caption(f"{count} transactions")
+
+# # ---------------------------------------------
+# # DISPLAY RESULTS
+# # ---------------------------------------------
+
+#     if not filtered_transactions:
+#         st.info("No transactions match your search.")
+#         return
+
+#     for transaction in filtered_transactions:
+#         display_transaction(transaction)
 
 
 def display_recent_transactions(transactions):
@@ -335,11 +354,6 @@ def display_recent_transactions(transactions):
                 "Recent transactions"
             )
 
-        with count_column:
-
-            st.caption(
-                "Last 5"
-            )
 
         if not transactions:
 
@@ -377,15 +391,37 @@ def display_recent_transactions(transactions):
                 key="transaction_type_filter"
             )
 
+
         # ---------------------------------------------
         # FILTER TRANSACTIONS
         # ---------------------------------------------
 
-        filtered_transactions = filter_transactions(
-            transactions,
-            search_text,
-            transaction_type
-        )
+        filtered_transactions = transactions
+
+        if search_text:
+            filtered_transactions = [
+                transaction
+                for transaction in filtered_transactions
+                if search_text.lower()
+                in transaction[2].lower()
+            ]
+
+        if transaction_type != "All":
+            filtered_transactions = [
+                transaction
+                for transaction in filtered_transactions
+                if transaction[3] == transaction_type
+            ]
+
+
+        with count_column:
+            count = len(filtered_transactions)
+
+            if count == 1:
+                st.caption("1 transaction")
+            else:
+                st.caption(f"{count} transactions")
+
 
         # ---------------------------------------------
         # DISPLAY RESULTS
