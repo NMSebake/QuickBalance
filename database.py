@@ -3,10 +3,11 @@ import sqlite3
 from pathlib import Path
 
 
+PROJECT_ROOT = Path(__file__).resolve().parent
 DATABASE_PATH = Path(
     os.environ.get(
         "QUICKBALANCE_DATABASE_PATH",
-        "data/quickbalance.db",
+        PROJECT_ROOT / "data" / "quickbalance.db",
     )
 )
 
