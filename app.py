@@ -1,3 +1,7 @@
+# =========================================================
+# IMPORTS
+# =========================================================
+
 import io
 from pathlib import Path
 
@@ -8,13 +12,13 @@ from openpyxl.styles import Font, Alignment
 
 from services import (
     authenticate_customer,
+    register_customer,
+    link_customer_account,
     get_customer_accounts,
     get_account_dashboard,
     get_account_transactions,
     mini_statement
 )
-
-
 
 
 # =========================================================
@@ -36,7 +40,12 @@ def load_css():
 
     css_file = Path("styles.css")
 
-    with open(css_file, "r", encoding="utf-8") as file:
+    with open(
+        css_file,
+        "r",
+        encoding="utf-8"
+    ) as file:
+
         css = file.read()
 
     st.markdown(
@@ -53,10 +62,18 @@ load_css()
 # =========================================================
 
 if "authenticated" not in st.session_state:
+
     st.session_state.authenticated = False
 
+
 if "customer_id" not in st.session_state:
+
     st.session_state.customer_id = None
+
+
+if "page" not in st.session_state:
+
+    st.session_state.page = "login"
 
 
 # =========================================================
@@ -117,7 +134,187 @@ def login_page():
             return
 
         st.session_state.authenticated = True
+
         st.session_state.customer_id = customer[0]
+
+        st.session_state.page = "dashboard"
+
+        st.rerun()
+
+
+# =========================================================
+# REGISTRATION PAGE
+# =========================================================
+
+def register_page():
+
+    st.title("Register")
+
+    st.write(
+        "Register for QuickBalance using your existing "
+        "customer information."
+    )
+
+    st.divider()
+
+    with st.form("registration_form"):
+        id_number = st.text_input(
+            "ID Number",
+            placeholder="Enter your ID number",
+            key="register_id_number",
+        )
+
+        username = st.text_input(
+            "Username",
+            placeholder="Create a username",
+            key="register_username",
+        )
+
+        password = st.text_input(
+            "Password",
+            type="password",
+            placeholder="Create a password",
+            key="register_password",
+        )
+
+        confirm_password = st.text_input(
+            "Confirm Password",
+            type="password",
+            placeholder="Re-enter your password",
+            key="register_confirm_password",
+        )
+
+        register_button = st.form_submit_button(
+            "Create Account",
+            type="primary",
+            use_container_width=True,
+        )
+
+    if register_button:
+
+        if not all((
+            id_number.strip(),
+            username.strip(),
+            password,
+            confirm_password,
+        )):
+
+            st.error(
+                "Please complete all fields."
+            )
+
+            return
+
+        if password != confirm_password:
+
+            st.error(
+                "Passwords do not match."
+            )
+
+            return
+
+        success, message = register_customer(
+            id_number=id_number.strip(),
+            username=username.strip(),
+            password=password
+        )
+
+        if success:
+            st.session_state.page = "login"
+            st.rerun()
+
+        else:
+
+            st.error(message)
+
+    st.divider()
+
+    if st.button(
+        "Back to Login",
+        use_container_width=True
+    ):
+
+        st.session_state.page = "login"
+
+        st.rerun()
+
+
+# =========================================================
+# ACCOUNT LINKING PAGE
+# =========================================================
+
+def link_account_page():
+
+    customer_id = st.session_state.customer_id
+
+    st.title("Link Your Account")
+
+    st.write(
+        "Link an existing bank account to your "
+        "QuickBalance profile."
+    )
+
+    st.info(
+        "Your account number must already exist in our "
+        "banking records."
+    )
+
+    st.divider()
+
+    id_number = st.text_input(
+        "ID Number",
+        placeholder="Confirm your ID number"
+    )
+
+    account_number = st.text_input(
+        "Account Number",
+        placeholder="Enter your account number"
+    )
+
+    link_button = st.button(
+        "Link Account",
+        type="primary",
+        use_container_width=True
+    )
+
+    if link_button:
+
+        if not id_number or not account_number:
+
+            st.error(
+                "Please enter your ID number and account number."
+            )
+
+            return
+
+        success, message = link_customer_account(
+            customer_id=customer_id,
+            id_number=id_number,
+            account_number=account_number
+        )
+
+        if success:
+
+            st.success(message)
+
+            st.rerun()
+
+        else:
+
+            st.error(message)
+
+    st.divider()
+
+    if st.button(
+        "Logout",
+        use_container_width=True
+    ):
+
+        st.session_state.authenticated = False
+
+        st.session_state.customer_id = None
+
+        st.session_state.page = "login"
 
         st.rerun()
 
@@ -126,12 +323,14 @@ def login_page():
 # ACCOUNT CARD
 # =========================================================
 
-
-def display_account_card(customer_id, accounts):
+def display_account_card(
+    customer_id,
+    accounts
+):
 
     account_options = {
         account[5]: account[0]
-            for account in accounts
+        for account in accounts
     }
 
     with st.container(
@@ -142,13 +341,14 @@ def display_account_card(customer_id, accounts):
 
         selected_account_type = st.selectbox(
             "Select account",
-            options=list(account_options.keys())
+            options=list(
+                account_options.keys()
+            )
         )
 
         selected_account_id = account_options[
             selected_account_type
         ]
-
 
         # -------------------------------------------------
         # GET SELECTED ACCOUNT
@@ -172,12 +372,15 @@ def display_account_card(customer_id, accounts):
         # -------------------------------------------------
 
         first_name = dashboard["first_name"]
+
         last_name = dashboard["last_name"]
 
         account_number = dashboard["account_number"]
+
         account_type = dashboard["acc_type"]
 
         balance = dashboard["balance"]
+
         balance_rands = balance / 100
 
         st.markdown(
@@ -289,55 +492,9 @@ def display_transaction(transaction):
 # RECENT TRANSACTIONS
 # =========================================================
 
-# Filtering function
-# def filter_transactions(
-#     transactions,
-#     search_text="",
-#     transaction_type="All"
-# ):
-#     filtered_transactions = transactions
-
-#     if search_text:
-
-#         filtered_transactions = [
-#             transaction
-#             for transaction in filtered_transactions
-#             if search_text.lower()
-#             in transaction[2].lower()
-#         ]
-
-#     if transaction_type != "All":
-
-#         filtered_transactions = [
-#             transaction
-#             for transaction in filtered_transactions
-#             if transaction[3] == transaction_type
-#         ]
-
-#     # return filtered_transactions
-
-
-#     with count_column:
-#         count = len(filtered_transactions)
-
-#         if count == 1:
-#             st.caption("1 transaction")
-#         else:
-#             st.caption(f"{count} transactions")
-
-# # ---------------------------------------------
-# # DISPLAY RESULTS
-# # ---------------------------------------------
-
-#     if not filtered_transactions:
-#         st.info("No transactions match your search.")
-#         return
-
-#     for transaction in filtered_transactions:
-#         display_transaction(transaction)
-
-
-def display_recent_transactions(transactions):
+def display_recent_transactions(
+    transactions
+):
 
     with st.container(
         key="transactions_card"
@@ -354,7 +511,6 @@ def display_recent_transactions(transactions):
                 "Recent transactions"
             )
 
-
         if not transactions:
 
             st.info(
@@ -363,9 +519,9 @@ def display_recent_transactions(transactions):
 
             return
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # TRANSACTION FILTERS
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         search_column, type_column = st.columns(
             [2, 1]
@@ -391,14 +547,14 @@ def display_recent_transactions(transactions):
                 key="transaction_type_filter"
             )
 
-
-        # ---------------------------------------------
+        # -------------------------------------------------
         # FILTER TRANSACTIONS
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         filtered_transactions = transactions
 
         if search_text:
+
             filtered_transactions = [
                 transaction
                 for transaction in filtered_transactions
@@ -407,25 +563,38 @@ def display_recent_transactions(transactions):
             ]
 
         if transaction_type != "All":
+
             filtered_transactions = [
                 transaction
                 for transaction in filtered_transactions
                 if transaction[3] == transaction_type
             ]
 
+        # -------------------------------------------------
+        # TRANSACTION COUNT
+        # -------------------------------------------------
 
         with count_column:
-            count = len(filtered_transactions)
+
+            count = len(
+                filtered_transactions
+            )
 
             if count == 1:
-                st.caption("1 transaction")
+
+                st.caption(
+                    "1 transaction"
+                )
+
             else:
-                st.caption(f"{count} transactions")
 
+                st.caption(
+                    f"{count} transactions"
+                )
 
-        # ---------------------------------------------
+        # -------------------------------------------------
         # DISPLAY RESULTS
-        # ---------------------------------------------
+        # -------------------------------------------------
 
         if not filtered_transactions:
 
@@ -442,14 +611,13 @@ def display_recent_transactions(transactions):
             )
 
 
-
-
-
 # =========================================================
 # THIS MONTH
 # =========================================================
 
-def display_monthly_summary(transactions):
+def display_monthly_summary(
+    transactions
+):
 
     money_in = sum(
         transaction[4]
@@ -464,13 +632,16 @@ def display_monthly_summary(transactions):
     )
 
     money_in_rands = money_in / 100
+
     money_out_rands = money_out / 100
 
     with st.container(
         key="monthly_card"
     ):
 
-        st.caption("THIS MONTH")
+        st.caption(
+            "THIS MONTH"
+        )
 
         income_column, income_value = st.columns(
             [2, 1]
@@ -478,7 +649,9 @@ def display_monthly_summary(transactions):
 
         with income_column:
 
-            st.write("Money in")
+            st.write(
+                "Money in"
+            )
 
         with income_value:
 
@@ -494,7 +667,9 @@ def display_monthly_summary(transactions):
 
         with expense_column:
 
-            st.write("Money out")
+            st.write(
+                "Money out"
+            )
 
         with expense_value:
 
@@ -503,13 +678,13 @@ def display_monthly_summary(transactions):
             )
 
 
-
-
 # =========================================================
 # MINI STATEMENT
 # =========================================================
 
-def create_excel_statement(statement):
+def create_excel_statement(
+    statement
+):
 
     statement_data = []
 
@@ -577,14 +752,19 @@ def create_excel_statement(statement):
         # -------------------------------------------------
 
         worksheet["A4"] = "Customer Name"
-        worksheet["B4"] = statement["customer"]["name"]
+
+        worksheet["B4"] = (
+            statement["customer"]["name"]
+        )
 
         worksheet["A5"] = "Account Number"
+
         worksheet["B5"] = (
             statement["customer"]["account_number"]
         )
 
         worksheet["A6"] = "Account Type"
+
         worksheet["B6"] = (
             statement["customer"]["account_type"]
         )
@@ -657,10 +837,21 @@ def create_excel_statement(statement):
         # COLUMN WIDTHS
         # -------------------------------------------------
 
-        worksheet.column_dimensions["A"].width = 15
-        worksheet.column_dimensions["B"].width = 30
-        worksheet.column_dimensions["C"].width = 22
-        worksheet.column_dimensions["D"].width = 18
+        worksheet.column_dimensions[
+            "A"
+        ].width = 15
+
+        worksheet.column_dimensions[
+            "B"
+        ].width = 30
+
+        worksheet.column_dimensions[
+            "C"
+        ].width = 22
+
+        worksheet.column_dimensions[
+            "D"
+        ].width = 18
 
     return output.getvalue()
 
@@ -669,7 +860,10 @@ def create_excel_statement(statement):
 # DOCUMENTS
 # =========================================================
 
-def display_documents(statement, account_number):
+def display_documents(
+    statement,
+    account_number
+):
 
     excel_data = create_excel_statement(
         statement
@@ -679,7 +873,9 @@ def display_documents(statement, account_number):
         key="documents_card"
     ):
 
-        st.caption("DOCUMENTS")
+        st.caption(
+            "DOCUMENTS"
+        )
 
         st.markdown(
             "**Mini Statement**"
@@ -705,21 +901,27 @@ def display_documents(statement, account_number):
         )
 
 
-
+# =========================================================
+# DASHBOARD PAGE
+# =========================================================
 
 def dashboard_page():
 
-    customer_id = st.session_state.customer_id
+    customer_id = (
+        st.session_state.customer_id
+    )
 
     accounts = get_customer_accounts(
         customer_id
     )
 
+    # -----------------------------------------------------
+    # NO LINKED ACCOUNTS
+    # -----------------------------------------------------
+
     if not accounts:
 
-        st.error(
-            "No accounts found for this customer."
-        )
+        link_account_page()
 
         return
 
@@ -727,9 +929,11 @@ def dashboard_page():
     # ACCOUNT
     # -----------------------------------------------------
 
-    dashboard, selected_account_id = display_account_card(
-        customer_id,
-        accounts
+    dashboard, selected_account_id = (
+        display_account_card(
+            customer_id,
+            accounts
+        )
     )
 
     if dashboard is None:
@@ -766,7 +970,6 @@ def dashboard_page():
             transactions
         )
 
-
         statement = mini_statement(
             customer_id,
             selected_account_id
@@ -777,14 +980,13 @@ def dashboard_page():
             display_documents(
                 statement,
                 dashboard["account_number"]
-                )
+            )
 
         else:
 
             st.error(
                 "Unable to generate mini statement"
             )
-
 
     # -----------------------------------------------------
     # LOGOUT
@@ -797,7 +999,10 @@ def dashboard_page():
     ):
 
         st.session_state.authenticated = False
+
         st.session_state.customer_id = None
+
+        st.session_state.page = "login"
 
         st.rerun()
 
@@ -808,7 +1013,28 @@ def dashboard_page():
 
 if not st.session_state.authenticated:
 
-    login_page()
+    if st.session_state.page == "login":
+
+        login_page()
+
+        if st.button(
+            "Register Instead",
+            use_container_width=True
+        ):
+
+            st.session_state.page = "register"
+
+            st.rerun()
+
+    elif st.session_state.page == "register":
+
+        register_page()
+
+    else:
+
+        st.session_state.page = "login"
+
+        st.rerun()
 
 else:
 

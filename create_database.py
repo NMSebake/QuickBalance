@@ -29,10 +29,21 @@ def create_database():
         CREATE TABLE IF NOT EXISTS customers (
             customer_id TEXT PRIMARY KEY,
             id_no TEXT NOT NULL UNIQUE,
-            username TEXT NOT NULL UNIQUE,
             first_name TEXT NOT NULL,
-            last_name TEXT NOT NULL,
-            password TEXT NOT NULL
+            last_name TEXT NOT NULL
+        )
+    """)
+
+    # ---------------------------------------------------------
+    # CREATE ONLINE BANKING TABLE
+    # ---------------------------------------------------------
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS online_banking (
+            customer_id TEXT PRIMARY KEY,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            FOREIGN KEY (customer_id)
+                REFERENCES customers(customer_id)
         )
     """)
 
@@ -53,6 +64,22 @@ def create_database():
                 REFERENCES customers(customer_id)
         )
     """)
+
+    # ---------------------------------------------------------
+    # CREATE ACCOUNT LINKING TABLE
+    # ---------------------------------------------------------
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS linked_accounts (
+            customer_id TEXT NOT NULL,
+            account_id INTEGER NOT NULL,
+            PRIMARY KEY (customer_id, account_id),
+            FOREIGN KEY (customer_id)
+                REFERENCES customers(customer_id),
+            FOREIGN KEY (account_id)
+                REFERENCES accounts(account_id)
+        )
+    """)
+
 
     # ---------------------------------------------------------
     # CREATE TRANSACTIONS TABLE
@@ -77,58 +104,37 @@ def create_database():
     # ---------------------------------------------------------
 
     customers = [
-        ("CUST1001", "9001015800081", "thabo.m", "Thabo", "Mokoena", "Pass1001"),
-        ("CUST1002", "8505125800082", "lerato.m", "Lerato", "Molefe", "Pass1002"),
-        ("CUST1003", "9207235800083", "daniel.n", "Daniel", "Naidoo", "Pass1003"),
-        ("CUST1004", "8804155800084", "naledi.mt", "Naledi", "Mthembu", "Pass1004"),
-        ("CUST1005", "9109025800085", "sipho.d", "Sipho", "Dlamini", "Pass1005"),
-        ("CUST1006", "8706205800086", "anele.k", "Anele", "Khumalo", "Pass1006"),
-        ("CUST1007", "9503185800087", "kabelo.m", "Kabelo", "Mokoena", "Pass1007"),
-        ("CUST1008", "8907115800088", "ayanda.n", "Ayanda", "Ndlovu", "Pass1008"),
-        ("CUST1009", "9302255800089", "mpho.ma", "Mpho", "Maseko", "Pass1009"),
-        ("CUST1010", "8608095800090", "zanele.z", "Zanele", "Zulu", "Pass1010"),
-        ("CUST1011", "9401165800091", "neo.mo", "Neo", "Molefe", "Pass1011"),
-        ("CUST1012", "9005275800092", "busisiwe.s", "Busisiwe", "Sithole", "Pass1012"),
-        ("CUST1013", "8809145800093", "lungile.p", "Lungile", "Pillay", "Pass1013"),
-        ("CUST1014", "9203015800094", "tshepo.mb", "Tshepo", "Mabena", "Pass1014"),
-        ("CUST1015", "8507285800095", "karabo.mk", "Karabo", "Mokoena", "Pass1015"),
-        ("CUST1016", "9105105800096", "siyabonga.d", "Siyabonga", "Dube", "Pass1016"),
-        ("CUST1017", "9608225800097", "precious.n", "Precious", "Nkosi", "Pass1017"),
-        ("CUST1018", "8701135800098", "themba.mt", "Themba", "Mthethwa", "Pass1018"),
-        ("CUST1019", "9306045800099", "refilwe.mo", "Refilwe", "Modise", "Pass1019"),
-        ("CUST1020", "8909255800100", "andile.c", "Andile", "Cele", "Pass1020")
+        ("CUST1001", "9001015800081", "Thabo", "Mokoena"),
+        ("CUST1002", "8505125800082", "Lerato", "Molefe"),
+        ("CUST1003", "9207235800083", "Daniel", "Naidoo"),
+        ("CUST1004", "8804155800084", "Naledi", "Mthembu"),
+        ("CUST1005", "9109025800085", "Sipho", "Dlamini"),
+        ("CUST1006", "8706205800086", "Anele", "Khumalo"),
+        ("CUST1007", "9503185800087", "Kabelo", "Mokoena"),
+        ("CUST1008", "8907115800088", "Ayanda", "Ndlovu"),
+        ("CUST1009", "9302255800089", "Mpho", "Maseko"),
+        ("CUST1010", "8608095800090", "Zanele", "Zulu"),
+        ("CUST1011", "9401165800091", "Neo", "Molefe"),
+        ("CUST1012", "9005275800092", "Busisiwe", "Sithole"),
+        ("CUST1013", "8809145800093", "Lungile", "Pillay"),
+        ("CUST1014", "9203015800094", "Tshepo", "Mabena"),
+        ("CUST1015", "8507285800095", "Karabo", "Mokoena"),
+        ("CUST1016", "9105105800096", "Siyabonga", "Dube"),
+        ("CUST1017", "9608225800097", "Precious", "Nkosi"),
+        ("CUST1018", "8701135800098", "Themba", "Mthethwa"),
+        ("CUST1019", "9306045800099", "Refilwe", "Modise"),
+        ("CUST1020", "8909255800100", "Andile", "Cele")
     ]
 
-
-    customers = [
-        (
-            customer_id,
-            id_no,
-            username,
-            first_name,
-            last_name,
-            password_hasher.hash(password)
-        )
-        for (
-            customer_id,
-            id_no,
-            username,
-            first_name,
-            last_name,
-            password
-        ) in customers
-    ]
 
     cursor.executemany("""
         INSERT INTO customers (
             customer_id,
             id_no,
-            username,
             first_name,
-            last_name,
-            password
+            last_name
         )
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?)
     """, customers)
 
     # ---------------------------------------------------------

@@ -2,13 +2,58 @@ from argon2 import PasswordHasher
 
 from database import (
     get_customer,
-    get_customer_by_username,
-    get_accounts,
+    get_customer_by_id_number,
+    get_online_customer,
+    get_online_customer_by_customer_id,
+    create_online_banking,
+    link_account,
+    get_linked_accounts,
     get_account,
     get_recent_transactions as db_get_recent_transactions
 )
 
 password_hasher = PasswordHasher()
+
+def register_customer(
+    id_number,
+    username,
+    password
+):
+    """
+    Customer registration
+    """
+    if not (
+        id_number
+        and username
+        and password
+    ):
+        return False, "Please complete all fields."
+
+    customer = get_customer_by_id_number(
+        id_number
+    )
+
+    if customer is None:
+        return False, "ID number not found."
+
+    if get_online_customer(username):
+        return False, "Username already exists."
+
+    if get_online_customer_by_customer_id(customer[0]):
+        return False, "Customer is already registered."
+
+    password_hash = password_hasher.hash(
+        password
+    )
+
+    create_online_banking(
+        customer[0],
+        username,
+        password_hash
+    )
+
+    return True, "Registration successful."
+
 
 
 def hash_password(password):
@@ -34,23 +79,28 @@ def authenticate_customer(username, password):
 
     username = username.strip().lower()
 
-    customer = get_customer_by_username(username)
+    customer = get_online_customer(
+        # username.strip().lower()
+        username
+    )
 
     if customer is None:
         return None
 
-    stored_password_hash = customer[5]
 
     try:
         password_hasher.verify(
-            stored_password_hash,
+            customer[2],
             password
         )
 
+    # except VerifyMismatchError:
+    #     return None
+
     except Exception:
         return None
-
-    return customer
+    
+    return get_customer(customer[0])
 
 
 def get_customer_accounts(customer_id):
@@ -63,7 +113,7 @@ def get_customer_accounts(customer_id):
     if customer is None:
         return []
 
-    return get_accounts(customer_id)
+    return get_linked_accounts(customer_id)
 
 
 def get_account_dashboard(customer_id, account_id):
@@ -82,8 +132,13 @@ def get_account_dashboard(customer_id, account_id):
     if account is None:
         return None
 
-    # Selected account needs to belong to customer
-    if account[1] != customer_id:
+    # Only accounts explicitly linked to online banking are accessible.
+    linked_account_ids = {
+        linked_account[0]
+        for linked_account in get_linked_accounts(customer_id)
+    }
+
+    if account[0] not in linked_account_ids:
         return None
 
     return {
@@ -142,3 +197,35 @@ def mini_statement(customer_id, account_id):
         "balance": dashboard["balance"],
         "transactions": transactions
     }
+
+
+
+def link_customer_account(
+    customer_id,
+    id_number,
+    account_number
+):
+    """
+    Link an existing customer account
+    to the customer's online banking profile.
+    """
+
+    customer = get_customer(
+        customer_id
+    )
+
+    if customer is None:
+        return False, "Customer not found."
+
+    if customer[3] != id_number:
+        return False, "ID number does not match."
+
+    success = link_account(
+        customer_id,
+        account_number
+    )
+
+    if not success:
+        return False, "Account not found."
+
+    return True, "Account linked."

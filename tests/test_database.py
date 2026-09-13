@@ -245,4 +245,64 @@ def test_each_customer_has_five_transactions_per_account():
         assert transaction_count == 5
 
 
+def test_online_banking_table_exists():
+    connection = get_connection()
+    result = connection.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'online_banking'"
+    ).fetchone()
+    connection.close()
+    assert result is not None
+
+
+def test_linked_accounts_table_exists():
+    connection = get_connection()
+    result = connection.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'linked_accounts'"
+    ).fetchone()
+    connection.close()
+    assert result is not None
+
+
+def test_customers_have_no_online_banking_passwords():
+    connection = get_connection()
+    columns = connection.execute("PRAGMA table_info(customers)").fetchall()
+    connection.close()
+    column_names = {column[1] for column in columns}
+    assert "password" not in column_names
+    assert "username" not in column_names
+
+
+def test_online_banking_contains_only_valid_customers():
+    connection = get_connection()
+    orphan_count = connection.execute(
+        """SELECT COUNT(*) FROM online_banking ob
+        LEFT JOIN customers c ON ob.customer_id = c.customer_id
+        WHERE c.customer_id IS NULL"""
+    ).fetchone()[0]
+    connection.close()
+    assert orphan_count == 0
+
+
+def test_linked_accounts_contain_only_valid_customers():
+    connection = get_connection()
+    orphan_count = connection.execute(
+        """SELECT COUNT(*) FROM linked_accounts la
+        LEFT JOIN customers c ON la.customer_id = c.customer_id
+        WHERE c.customer_id IS NULL"""
+    ).fetchone()[0]
+    connection.close()
+    assert orphan_count == 0
+
+
+def test_linked_accounts_contain_only_valid_accounts():
+    connection = get_connection()
+    orphan_count = connection.execute(
+        """SELECT COUNT(*) FROM linked_accounts la
+        LEFT JOIN accounts a ON la.account_id = a.account_id
+        WHERE a.account_id IS NULL"""
+    ).fetchone()[0]
+    connection.close()
+    assert orphan_count == 0
+
+
 

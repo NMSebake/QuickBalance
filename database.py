@@ -1,8 +1,14 @@
+import os
 import sqlite3
 from pathlib import Path
 
 
-DATABASE_PATH = Path("data/quickbalance.db")
+DATABASE_PATH = Path(
+    os.environ.get(
+        "QUICKBALANCE_DATABASE_PATH",
+        "data/quickbalance.db",
+    )
+)
 
 
 def get_connection():
@@ -20,12 +26,7 @@ def get_connection():
 
 
 def get_customer(customer_id):
-    """
-    Retrieve a customer using their customer ID.
-    """
-
     connection = get_connection()
-
     cursor = connection.cursor()
 
     cursor.execute("""
@@ -33,8 +34,7 @@ def get_customer(customer_id):
             customer_id,
             first_name,
             last_name,
-            id_no,
-            password
+            id_no
         FROM customers
         WHERE customer_id = ?
     """, (customer_id,))
@@ -135,38 +135,6 @@ def get_recent_transactions(account_id, limit=5):
 
 
 
-def get_customer_by_username(username):
-    """
-    Retrieve a customer using their unique username.
-    """
-
-    connection = get_connection()
-
-    cursor = connection.cursor()
-
-    cursor.execute("""
-        SELECT
-            customer_id,
-            id_no,
-            username,
-            first_name,
-            last_name,
-            password
-        FROM customers
-        WHERE username = ?
-    """, (username,))
-
-    customer = cursor.fetchone()
-
-    connection.close()
-
-    return customer
-
-
-
-
-
-
 
 def get_monthly_totals(account_id):
 
@@ -190,3 +158,183 @@ def get_monthly_totals(account_id):
     connection.close()
 
     return totals
+
+
+
+def get_customer_by_id_number(id_number):
+    """
+    Find customr by ID number
+    """
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM customers
+        WHERE id_no=?
+        """,
+        (id_number,)
+    )
+
+    customer = cursor.fetchone()
+
+    connection.close()
+
+    return customer
+
+
+
+def get_online_customer(username):
+    """
+    Check customer username
+    """
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM online_banking
+        WHERE username=?
+        """,
+        (username.lower(),)
+    )
+
+    customer = cursor.fetchone()
+
+    connection.close()
+
+    return customer
+
+
+def get_online_customer_by_customer_id(customer_id):
+    """Return the online-banking profile for a customer, if one exists."""
+    connection = get_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM online_banking
+        WHERE customer_id = ?
+        """,
+        (customer_id,),
+    )
+
+    customer = cursor.fetchone()
+    connection.close()
+    return customer
+
+
+
+def create_online_banking(
+    customer_id,
+    username,
+    password_hash
+):
+    """
+    Create online banking profile
+    """
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO online_banking
+        VALUES (?,?,?)
+        """,
+        (
+            customer_id,
+            username.lower(),
+            password_hash
+        )
+    )
+
+    connection.commit()
+
+    connection.close()
+
+
+
+def link_account(
+    customer_id,
+    account_number
+):
+    """
+    Link account
+    """
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT account_id
+        FROM accounts
+        WHERE customer_id=?
+        AND account_number=?
+        """,
+        (
+            customer_id,
+            account_number
+        )
+    )
+
+    account = cursor.fetchone()
+
+    if account is None:
+
+        connection.close()
+
+        return False
+
+    cursor.execute(
+        """
+        INSERT OR IGNORE INTO linked_accounts
+        VALUES (?,?)
+        """,
+        (
+            customer_id,
+            account[0]
+        )
+    )
+
+    connection.commit()
+
+    connection.close()
+
+    return True
+
+
+
+def get_linked_accounts(customer_id):
+    """
+    Get linked account
+    """
+    connection = get_connection()
+
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        SELECT a.*
+        FROM accounts a
+
+        JOIN linked_accounts l
+
+        ON a.account_id=l.account_id
+
+        WHERE l.customer_id=?
+        """,
+        (customer_id,)
+    )
+
+    accounts = cursor.fetchall()
+
+    connection.close()
+
+    return accounts
